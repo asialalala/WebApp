@@ -1,0 +1,9 @@
+<h4> All your bookings</h4>
+<button (click)="onAdd()">Add</button>
+<ul>
+    <li *ngFor="let booking of bookings">
+        Room number. {{booking.roomId }}, floor {{booking.floor}}, state {{booking.state}}
+        <button (click)="onCancel(booking)">Cancel</button>
+    </li>
+    
+</ul>
