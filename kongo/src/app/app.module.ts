@@ -7,13 +7,15 @@ import { BasicComponent } from '../tutorial/basic.component';
 import { BookingComponent } from '../project/components/booking/booking.component';
 import { InsertHotelTypesService } from '../tutorial/insertHotelTypes.service';
 import { MailComponent } from '../project/components/email/email.component';
+import { DisplayBookingsComponent } from './display-bookings/display-bookings.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     BasicComponent,
     BookingComponent,
-    MailComponent
+    MailComponent,
+    DisplayBookingsComponent
   ],
   imports: [
     BrowserModule,
