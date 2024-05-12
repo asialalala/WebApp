@@ -23,8 +23,9 @@ client.connect(function(err) {
 });
 
 // Defining API endpoints
-app.get('/api/items', (req, res) => {
-    pool.query('SELECT * FROM items', (err, result) => {
+app.get('api/booking', (req, res) => {
+    console.log("Tying to get!");
+    pool.query('SELECT * FROM booking', (err, result) => {
       if (err) {
         console.error('Error executing query:', err);
         res.status(500).json({ error: 'Internal Server Error' });
@@ -34,61 +35,63 @@ app.get('/api/items', (req, res) => {
     });
   });
   
-  app.post('/api/items', (req, res) => {
-    const { name, description } = req.body;
-  
-    pool.query(
-      'INSERT INTO items (name, description) VALUES ($1, $2) RETURNING *',
-      [name, description],
-      (err, result) => {
-        if (err) {
-          console.error('Error executing query:', err);
-          res.status(500).json({ error: 'Internal Server Error' });
-        } else {
-          res.json(result.rows[0]);
-        }
-      }
-    );
-  });
+//   app.post('api/booking', (req, res) => {
+//     const { name, description } = req.body;
+//     console.log("Tying to post!");
+//     pool.query(
+//       'INSERT INTO items (name, description) VALUES ($1, $2) RETURNING *',
+//       [name, description],
+//       (err, result) => {
+//         if (err) {
+//           console.error('Error executing query:', err);
+//           res.status(500).json({ error: 'Internal Server Error' });
+//         } else {
+//           res.json(result.rows[0]);
+//         }
+//       }
+//     );
+//   });
 
-//   Implementing CRUD operations
-// Create Read Update Delete
+// //   Implementing CRUD operations
+// // Create Read Update Delete
 
-app.put('/api/items/:id', (req, res) => {
-    const { id } = req.params;
-    const { name, description } = req.body;
+// app.put('api/booking:id', (req, res) => {
+//     const { id } = req.params;
+//     const { name, description } = req.body;
+//     console.log("Tying to put!");
+
+//     pool.query(
+//       'UPDATE items SET name = $1, description = $2 WHERE id = $3 RETURNING *',
+//       [name, description, id],
+//       (err, result) => {
+//         if (err) {
+//           console.error('Error executing query:', err);
+//           res.status(500).json({ error: 'Internal Server Error' });
+//         } else if (result.rows.length === 0) {
+//           res.status(404).json({ error: 'Item not found' });
+//         } else {
+//           res.json(result.rows[0]);
+//         }
+//       }
+//     );
+//   });
   
-    pool.query(
-      'UPDATE items SET name = $1, description = $2 WHERE id = $3 RETURNING *',
-      [name, description, id],
-      (err, result) => {
-        if (err) {
-          console.error('Error executing query:', err);
-          res.status(500).json({ error: 'Internal Server Error' });
-        } else if (result.rows.length === 0) {
-          res.status(404).json({ error: 'Item not found' });
-        } else {
-          res.json(result.rows[0]);
-        }
-      }
-    );
-  });
-  
-  app.delete('/api/items/:id', (req, res) => {
-    const { id } = req.params;
-  
-    pool.query(
-      'DELETE FROM items WHERE id = $1 RETURNING *',
-      [id],
-      (err, result) => {
-        if (err) {
-          console.error('Error executing query:', err);
-          res.status(500).json({ error: 'Internal Server Error' });
-        } else if (result.rows.length === 0) {
-          res.status(404).json({ error: 'Item not found' });
-        } else {
-          res.json(result.rows[0]);
-        }
-      }
-    );
-  });
+//   app.delete('api/booking:id', (req, res) => {
+//     const { id } = req.params;
+//     console.log("Tying to delete!");
+
+//     pool.query(
+//       'DELETE FROM items WHERE id = $1 RETURNING *',
+//       [id],
+//       (err, result) => {
+//         if (err) {
+//           console.error('Error executing query:', err);
+//           res.status(500).json({ error: 'Internal Server Error' });
+//         } else if (result.rows.length === 0) {
+//           res.status(404).json({ error: 'Item not found' });
+//         } else {
+//           res.json(result.rows[0]);
+//         }
+//       }
+//     );
+//   });

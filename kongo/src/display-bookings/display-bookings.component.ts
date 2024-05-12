@@ -22,7 +22,8 @@ export class DisplayBookingsComponent implements OnInit {
   }
 
   getItems(): void {
-    this.http.get<any[]>('/api/items').subscribe(
+    console.log("Tying to connect!");
+    this.http.get<any[]>('api/booking').subscribe(
       (response) => {
         this.items = response;
       },

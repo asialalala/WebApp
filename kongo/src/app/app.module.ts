@@ -7,8 +7,9 @@ import { BasicComponent } from '../tutorial/basic.component';
 import { BookingComponent } from '../project/components/booking/booking.component';
 import { InsertHotelTypesService } from '../tutorial/insertHotelTypes.service';
 import { MailComponent } from '../project/components/email/email.component';
-import { DisplayBookingsComponent } from './display-bookings/display-bookings.component';
-import { RegistrationComponent } from './registration/registration.component';
+import { DisplayBookingsComponent } from '../display-bookings/display-bookings.component';
+import { HttpClientModule } from '@angular/common/http';
+
 
 @NgModule({
   declarations: [
@@ -17,16 +18,16 @@ import { RegistrationComponent } from './registration/registration.component';
     BookingComponent,
     MailComponent,
     DisplayBookingsComponent,
-    RegistrationComponent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
-    FormsModule
+    FormsModule,
+    HttpClientModule 
   ],
   providers: [
     provideClientHydration(),
-    InsertHotelTypesService
+    InsertHotelTypesService,
   ],
   bootstrap: [AppComponent]
 })
