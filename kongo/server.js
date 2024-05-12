@@ -3,6 +3,7 @@ const express = require('express');
 const app = express();
 
 const port = process.env.PORT || 4000;
+const bodyParser = require('body-parser');
 
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
@@ -23,10 +24,14 @@ pool.connect(function(err) {
   console.log("Connected!");
 });
 
+app.use(bodyParser.json());
+
 // Defining API endpoints
 app.get('/booking', (req, res) => {
+    const mail = req.query.mail;
     console.log("Trying to get bookings");
-    pool.query('SELECT booking.start_date, booking.end_date, booking.valid, room.queen_bed_num, room.single_bed_num FROM booking JOIN booking_room ON booking.booking_id=booking_room.booking_id JOIN room ON room.room_id=booking_room.room_id;', (err, result) => {
+
+    pool.query('SELECT booking.start_date, booking.end_date, booking.valid, room.queen_bed_num, room.single_bed_num, mail FROM booking JOIN booking_room ON booking.booking_id=booking_room.booking_id JOIN room ON room.room_id=booking_room.room_id JOIN customer ON booking.customer_id=customer.customer_id WHERE customer.mail=\'$1\';', mail, (err, result) => {
       if (err) {
         console.error('Error executing query:', err);
         res.status(500).json({ error: 'Internal Server Error' });

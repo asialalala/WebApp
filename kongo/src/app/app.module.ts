@@ -17,7 +17,7 @@ import { HttpClientModule } from '@angular/common/http';
     BasicComponent,
     BookingComponent,
     MailComponent,
-    DisplayBookingsComponent,
+    DisplayBookingsComponent
   ],
   imports: [
     BrowserModule,

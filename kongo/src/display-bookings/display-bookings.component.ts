@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 
 @Component({
   selector: 'app-display-bookings',
@@ -10,7 +10,7 @@ export class DisplayBookingsComponent implements OnInit {
   inputValue: string = '';
   message: string = '';
   bookings: any[] = [];
-
+  email = "a.kruk@gmail.com";
   constructor(private http: HttpClient) { }
 
   ngOnInit(): void {
@@ -23,7 +23,8 @@ export class DisplayBookingsComponent implements OnInit {
 
   getItems(): void {
     console.log("Tying to connect!");
-    this.http.get<any[]>('http://localhost:4000/booking').subscribe({
+    const params = new HttpParams().set('mail', this.email);
+    this.http.get<any[]>('http://localhost:4000/booking', { params } ).subscribe({
       next: (response) => {
         this.bookings = response;
       },
@@ -31,5 +32,10 @@ export class DisplayBookingsComponent implements OnInit {
         console.error('Error:', error);
       }
     });
+  }
+
+  onKeyUp()
+  {
+      console.log(this.email); // write on console
   }
 }

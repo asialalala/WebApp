@@ -2,12 +2,13 @@
 <input type="text" [(ngModel)]="inputValue">
 <button (click)="showMessage()">Show Message</button>
 <p>{{ message }}</p>
+<input [(ngModel)]="email" (keyup.enter)="onKeyUp()" /> 
 <ul>
     <li *ngFor="let booking of bookings"> 
         <p>Start Date: {{ booking.start_date }}</p>
         <p>End Date: {{ booking.end_date }}</p>
         <p>Number of beds: </p>
         <p *ngIf="booking.queen_bed_num > 0">{{ booking.queen_bed_num }} queen bed</p>
-        <p *ngIf="booking.single_bed_num > 0">{{ booking.single_bed_num }} single bed</p>
+        <p *ngIf="booking.single_bed_num > 0">{{ booking.single_bed_num }} single</p>
         <p>State: {{ booking.valid }}</p></li>
 </ul>
