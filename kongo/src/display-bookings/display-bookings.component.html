@@ -1,8 +1,7 @@
 <p>display-bookings works!</p>
 <input type="text" [(ngModel)]="inputValue">
-<button (click)="showMessage()">Show Message</button>
-<p>{{ message }}</p>
-<input [(ngModel)]="email" (keyup.enter)="onKeyUp()" /> 
+<button (click)="showMessage()">Show Bookings</button>
+<p>{{ email }}</p>
 <ul>
     <li *ngFor="let booking of bookings"> 
         <p>Start Date: {{ booking.start_date }}</p>

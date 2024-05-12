@@ -8,7 +8,6 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 })
 export class DisplayBookingsComponent implements OnInit {
   inputValue: string = '';
-  message: string = '';
   bookings: any[] = [];
   email = "a.kruk@gmail.com";
   constructor(private http: HttpClient) { }
@@ -18,7 +17,8 @@ export class DisplayBookingsComponent implements OnInit {
   }
 
   showMessage(): void {
-    this.message = this.inputValue;
+    this.email = this.inputValue;
+    this.getItems();
   }
 
   getItems(): void {
@@ -34,8 +34,4 @@ export class DisplayBookingsComponent implements OnInit {
     });
   }
 
-  onKeyUp()
-  {
-      console.log(this.email); // write on console
-  }
 }
