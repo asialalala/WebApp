@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'app-display-bookings',
@@ -8,13 +9,26 @@ import { Component, OnInit } from '@angular/core';
 export class DisplayBookingsComponent implements OnInit {
   inputValue: string = '';
   message: string = '';
-  
-  constructor() { }
+  items: any[] = [];
+
+  constructor(private http: HttpClient) { }
 
   ngOnInit(): void {
+    this.getItems();
   }
 
   showMessage(): void {
     this.message = this.inputValue;
+  }
+
+  getItems(): void {
+    this.http.get<any[]>('/api/items').subscribe(
+      (response) => {
+        this.items = response;
+      },
+      (error) => {
+        console.error('Error:', error);
+      }
+    );
   }
 }
