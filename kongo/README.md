@@ -15,7 +15,7 @@ Run `ng generate component component-name` to generate a new component. You can 
 Run `ng build --configuration production` to build the project. The build artifacts will be stored in the `dist/` directory.
 
 ## Run
-Run `node server.js` and paste `http://localhost:3000` into your website to use the application.
+Run `node server.js` and paste `http://localhost:4000` into your website to use the application.
 
 
 <!-- ## Running unit tests

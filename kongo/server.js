@@ -2,35 +2,37 @@
 const express = require('express');
 const app = express();
 
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 4000;
 
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
 });
 
 // Establishing a connection to PostgreSQL
-const { Client } = require('pg')
-const client = new Client({
+const { Pool } = require('pg')
+
+const pool = new Pool({
   user: 'postgres',
   host: '34.132.191.171',
   database: 'hotel',
   password: 'BazyDanych2024',
   port: 5432,
 })
-client.connect(function(err) {
+pool.connect(function(err) {
   if (err) throw err;
   console.log("Connected!");
 });
 
 // Defining API endpoints
-app.get('api/booking', (req, res) => {
-    console.log("Tying to get!");
-    pool.query('SELECT * FROM booking', (err, result) => {
+app.get('/booking', (req, res) => {
+    console.log("Trying to get bookings");
+    pool.query('SELECT booking.start_date, booking.end_date, booking.valid, room.queen_bed_num, room.single_bed_num FROM booking JOIN booking_room ON booking.booking_id=booking_room.booking_id JOIN room ON room.room_id=booking_room.room_id;', (err, result) => {
       if (err) {
         console.error('Error executing query:', err);
         res.status(500).json({ error: 'Internal Server Error' });
       } else {
         res.json(result.rows);
+        console.log(result)
       }
     });
   });

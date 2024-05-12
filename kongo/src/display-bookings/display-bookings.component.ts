@@ -9,7 +9,7 @@ import { HttpClient } from '@angular/common/http';
 export class DisplayBookingsComponent implements OnInit {
   inputValue: string = '';
   message: string = '';
-  items: any[] = [];
+  bookings: any[] = [];
 
   constructor(private http: HttpClient) { }
 
@@ -23,13 +23,13 @@ export class DisplayBookingsComponent implements OnInit {
 
   getItems(): void {
     console.log("Tying to connect!");
-    this.http.get<any[]>('api/booking').subscribe(
-      (response) => {
-        this.items = response;
+    this.http.get<any[]>('http://localhost:4000/booking').subscribe({
+      next: (response) => {
+        this.bookings = response;
       },
-      (error) => {
+      error: (error) => {
         console.error('Error:', error);
       }
-    );
+    });
   }
 }
