@@ -38,7 +38,7 @@ app.get('/booking', (req, res) => {
         res.status(500).json({ error: 'Internal Server Error' });
       } else {
         res.json(result.rows);
-        console.log(result)
+        console.log(result);
       }
     });
   });

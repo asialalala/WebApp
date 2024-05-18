@@ -1,30 +1,32 @@
-<div>
-    <h2>Get Bookings</h2>
-    <form (ngSubmit)="showMessage()">
-      <div>
-        <label for="email">Email:</label>
-        <input
-          type="email"
-          id="email"
-          [(ngModel)]="inputValue"
-          name="email"
-          required
-        />
+<h2>Get Bookings</h2>
+<form (ngSubmit)="showMessage()">
+    <div class="flex flex-column gap-2">
+        <div class="flex flex-row gap-2">
+          <input
+            pInputText 
+            id="email"
+            [(ngModel)]="inputValue"
+            name="email"
+            required
+          />
+          <p-button margin-left:8px type="submit">Fetch Bookings</p-button>
+        </div>
+        <small id="username-help">
+          Enter your e-mail to get your bookings.
+        </small>
       </div>
-      <button type="submit">Fetch Bookings</button>
-    </form>
-    
-    <div *ngIf="bookings.length > 0">
-      <ul>
+</form>
+
+<div *ngIf="bookings.length > 0">
+    <ul>
         <li *ngFor="let booking of bookings">
-          <p>Start Date: {{ booking.start_date }}</p>
-          <p>End Date: {{ booking.end_date }}</p>
-          <p>Valid: {{ booking.valid }}</p>
-          <p>Queen Beds: {{ booking.queen_bed_num }}</p>
-          <p>Single Beds: {{ booking.single_bed_num }}</p>
-          <p>Email: {{ booking.mail }}</p>
+            <p>Start Date: {{ booking.start_date }}</p>
+            <p>End Date: {{ booking.end_date }}</p>
+            <p>Valid: {{ booking.valid }}</p>
+            <p>Queen Beds: {{ booking.queen_bed_num }}</p>
+            <p>Single Beds: {{ booking.single_bed_num }}</p>
+            <p>Email: {{ booking.mail }}</p>
         </li>
-      </ul>
-    </div>
-    <p *ngIf="bookings.length === 0">No bookings found</p>
-  </div>
+    </ul>
+</div>
+<p *ngIf="bookings.length === 0">No bookings found</p>

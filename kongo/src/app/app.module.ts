@@ -9,6 +9,9 @@ import { InsertHotelTypesService } from '../tutorial/insertHotelTypes.service';
 import { MailComponent } from '../project/components/email/email.component';
 import { DisplayBookingsComponent } from '../display-bookings/display-bookings.component';
 import { HttpClientModule } from '@angular/common/http';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { ButtonModule } from 'primeng/button';
+import { InputTextModule } from 'primeng/inputtext';
 
 
 @NgModule({
@@ -21,9 +24,12 @@ import { HttpClientModule } from '@angular/common/http';
   ],
   imports: [
     BrowserModule,
+    BrowserAnimationsModule,
     AppRoutingModule,
     FormsModule,
-    HttpClientModule 
+    HttpClientModule,
+    ButtonModule,
+    InputTextModule
   ],
   providers: [
     provideClientHydration(),
