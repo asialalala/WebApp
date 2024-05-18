@@ -1,13 +1,30 @@
-<p>display-bookings works!</p>
-<input type="text" [(ngModel)]="inputValue">
-<button (click)="showMessage()">Show Bookings</button>
-<p>{{ email }}</p>
-<ul>
-    <li *ngFor="let booking of bookings"> 
-        <p>Start Date: {{ booking.start_date }}</p>
-        <p>End Date: {{ booking.end_date }}</p>
-        <p>Number of beds: </p>
-        <p *ngIf="booking.queen_bed_num > 0">{{ booking.queen_bed_num }} queen bed</p>
-        <p *ngIf="booking.single_bed_num > 0">{{ booking.single_bed_num }} single</p>
-        <p>State: {{ booking.valid }}</p></li>
-</ul>
+<div>
+    <h2>Get Bookings</h2>
+    <form (ngSubmit)="showMessage()">
+      <div>
+        <label for="email">Email:</label>
+        <input
+          type="email"
+          id="email"
+          [(ngModel)]="inputValue"
+          name="email"
+          required
+        />
+      </div>
+      <button type="submit">Fetch Bookings</button>
+    </form>
+    
+    <div *ngIf="bookings.length > 0">
+      <ul>
+        <li *ngFor="let booking of bookings">
+          <p>Start Date: {{ booking.start_date }}</p>
+          <p>End Date: {{ booking.end_date }}</p>
+          <p>Valid: {{ booking.valid }}</p>
+          <p>Queen Beds: {{ booking.queen_bed_num }}</p>
+          <p>Single Beds: {{ booking.single_bed_num }}</p>
+          <p>Email: {{ booking.mail }}</p>
+        </li>
+      </ul>
+    </div>
+    <p *ngIf="bookings.length === 0">No bookings found</p>
+  </div>
