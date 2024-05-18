@@ -6,16 +6,12 @@ import { HttpClient, HttpParams } from '@angular/common/http';
   templateUrl: './display-bookings.component.html',
   styleUrls: ['./display-bookings.component.css']
 })
-export class DisplayBookingsComponent implements OnInit {
+export class DisplayBookingsComponent {
   inputValue: string = '';
   bookings: Booking[] = [];
   email: string = '';
 
   constructor(private http: HttpClient) { }
-
-  ngOnInit(): void {
-    // Możemy zainicjować dane tutaj, jeśli potrzebujemy
-  }
 
   showMessage(): void {
     this.email = this.inputValue;
