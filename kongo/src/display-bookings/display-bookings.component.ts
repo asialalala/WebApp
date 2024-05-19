@@ -10,12 +10,17 @@ export class DisplayBookingsComponent {
   inputValue: string = '';
   bookings: Booking[] = [];
   email: string = '';
+  lastBooking: number = 0;
 
   constructor(private http: HttpClient) { }
 
   showMessage(): void {
     this.email = this.inputValue;
     this.getItems();
+  }
+
+  updateLastBooking(booingId: number): void {
+    this.lastBooking = booingId;
   }
 
   getItems(): void {
@@ -34,6 +39,7 @@ export class DisplayBookingsComponent {
 
 // Definiowanie interfejsu Booking
 interface Booking {
+  booking_id: number,
   start_date: string;
   end_date: string;
   valid: boolean;
@@ -41,3 +47,4 @@ interface Booking {
   single_bed_num: number;
   mail: string;
 }
+

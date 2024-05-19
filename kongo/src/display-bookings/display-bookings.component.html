@@ -1,32 +1,32 @@
 <h2>Get Bookings</h2>
 <form (ngSubmit)="showMessage()">
-    <div class="flex flex-column gap-2">
-        <div class="flex flex-row gap-2">
-          <input
-            pInputText 
-            id="email"
-            [(ngModel)]="inputValue"
-            name="email"
-            required
-          />
-          <p-button margin-left:8px type="submit">Fetch Bookings</p-button>
-        </div>
-        <small id="username-help">
-          Enter your e-mail to get your bookings.
-        </small>
-      </div>
+  <div class="flex flex-column gap-2">
+    <div class="flex flex-row gap-2">
+      <input pInputText id="email" [(ngModel)]="inputValue" name="email" required />
+      <p-button margin-left:8px type="submit">Fetch Bookings</p-button>
+    </div>
+    <small id="username-help">
+      Enter your e-mail to get your bookings.
+    </small>
+  </div>
 </form>
 
 <div *ngIf="bookings.length > 0">
-    <ul>
-        <li *ngFor="let booking of bookings">
-            <p>Start Date: {{ booking.start_date }}</p>
-            <p>End Date: {{ booking.end_date }}</p>
-            <p>Valid: {{ booking.valid }}</p>
-            <p>Queen Beds: {{ booking.queen_bed_num }}</p>
-            <p>Single Beds: {{ booking.single_bed_num }}</p>
-            <p>Email: {{ booking.mail }}</p>
-        </li>
-    </ul>
+  <ul>
+    <ng-container class="list" *ngFor="let booking of bookings">
+      <div *ngIf="booking.booking_id!=lastBooking">
+        <p>=====================================</p>
+        <p>Start Date: {{ booking.start_date }}</p>
+        <p>End Date: {{ booking.end_date }}</p>
+        <p>Valid: {{ booking.valid }}</p>
+      </div>
+      <ul>
+      <p>Queen Beds: {{ booking.queen_bed_num }}</p>
+      <p>Single Beds: {{ booking.single_bed_num }}</p>
+      <p> ---------------------------------------</p>
+      <p>{{ updateLastBooking(booking.booking_id) }}</p>
+      </ul>
+    </ng-container>
+  </ul>
 </div>
 <p *ngIf="bookings.length === 0">No bookings found</p>

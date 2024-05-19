@@ -32,7 +32,7 @@ app.get('/booking', (req, res) => {
     console.log("Trying to get bookings");
     console.log(mail);
 
-    pool.query('SELECT booking.start_date, booking.end_date, booking.valid, room.queen_bed_num, room.single_bed_num, mail FROM booking JOIN booking_room ON booking.booking_id=booking_room.booking_id JOIN room ON room.room_id=booking_room.room_id JOIN customer ON booking.customer_id=customer.customer_id WHERE customer.mail=$1;',[mail] ,(err, result) => {
+    pool.query('SELECT booking.booking_id, booking.start_date, booking.end_date, booking.valid, room.queen_bed_num, room.single_bed_num, mail FROM booking JOIN booking_room ON booking.booking_id=booking_room.booking_id JOIN room ON room.room_id=booking_room.room_id JOIN customer ON booking.customer_id=customer.customer_id WHERE customer.mail=$1;',[mail] ,(err, result) => {
       if (err) {
         console.error('Error executing query:', err);
         res.status(500).json({ error: 'Internal Server Error' });
@@ -42,6 +42,24 @@ app.get('/booking', (req, res) => {
       }
     });
   });
+
+  app.get('/canceling', (req, res) => {
+    const id = req.query.id;
+    console.log("Trying to cancel");
+    console.log(id);
+
+    pool.query('UPDATE booking SET valid=\'canceled\' WHERE booking_id=$1 ',[id],(err, result) => {
+      if (err) {
+        console.error('Error executing query:', err);
+        res.status(500).json({ error: 'Internal Server Error' });
+      } else {
+        res.json(result.rows);
+        console.log(result);
+      }
+    });
+  });
+
+
   
 //   app.post('api/booking', (req, res) => {
 //     const { name, description } = req.body;
