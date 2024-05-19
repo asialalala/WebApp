@@ -4,3 +4,10 @@
     gap: 5px; 
     margin-right: 10px; 
 }
+
+.submitDate {
+    display: flex; 
+    flex-direction: column;
+    gap: 5px; 
+    margin-right: 10px; 
+}
