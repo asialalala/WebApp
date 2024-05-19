@@ -70,7 +70,7 @@ app.get('/find', (req, res) => {
   console.log(startDate);
   console.log(endDate);
 
-  pool.query('SELECT room.room_id, room.queen_bed_num, room.single_bed_num, room.standard FROM room LEFT JOIN booking_room ON booking_room.room_id=room.room_id LEFT JOIN booking ON booking_room.booking_id=booking.booking_id where (start_date > \'$2\' OR end_date < \'$1\') OR  booking_room.room_id IS NULL ;',[startDate, endDate],(err, result) => {
+  pool.query('SELECT room.room_id, room.queen_bed_num, room.single_bed_num, room.standard FROM room LEFT JOIN booking_room ON booking_room.room_id=room.room_id LEFT JOIN booking ON booking_room.booking_id=booking.booking_id where (start_date > $2 OR end_date < $1) OR  booking_room.room_id IS NULL ;', [startDate, endDate],(err, result) => {
     if (err) {
       console.error('Error executing query:', err);
       res.status(500).json({ error: 'Internal Server Error' });
