@@ -3,7 +3,6 @@
   <div class="flex flex-column gap-2">
     <div class="flex flex-row gap-2">
       <input pInputText id="email" [(ngModel)]="inputValue" name="email" required />
-      <p-button margin-left:8px type="submit">Fetch Bookings</p-button>
     </div>
     <small id="username-help">
       Enter your e-mail to get your bookings.
@@ -19,6 +18,7 @@
         <p>Start Date: {{ booking.start_date }}</p>
         <p>End Date: {{ booking.end_date }}</p>
         <p>Valid: {{ booking.valid }}</p>
+        <button (click)="onCancel(booking.booking_id)">Cancel</button>
       </div>
       <ul>
       <p>Queen Beds: {{ booking.queen_bed_num }}</p>

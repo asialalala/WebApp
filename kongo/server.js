@@ -43,21 +43,23 @@ app.get('/booking', (req, res) => {
     });
   });
 
-  app.get('/canceling', (req, res) => {
-    const id = req.query.id;
+  app.put('/canceling/:id', (req, res) => {
+    const { id } = req.params;
     console.log("Trying to cancel");
     console.log(id);
 
-    pool.query('UPDATE booking SET valid=\'canceled\' WHERE booking_id=$1 ',[id],(err, result) => {
+    pool.query('UPDATE booking SET valid=\'canceled\' WHERE booking_id=$1 RETURNING *',[id],(err, result) => {
       if (err) {
         console.error('Error executing query:', err);
         res.status(500).json({ error: 'Internal Server Error' });
+      } else if (result.rows.length === 0) {
+        res.status(404).json({ error: 'Item not found' });
       } else {
-        res.json(result.rows);
-        console.log(result);
+        res.json(result.rows[0]);
       }
-    });
-  });
+    }
+  );
+});
 
 
   

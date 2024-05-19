@@ -23,12 +23,31 @@ export class DisplayBookingsComponent {
     this.lastBooking = booingId;
   }
 
+  onCancel(bookingId: number): void {
+    this.cancelBooking(bookingId);
+    this.getItems();
+  }
+
   getItems(): void {
     console.log("Tying to connect!");
     const params = new HttpParams().set('mail', this.email);
     this.http.get<Booking[]>('/api/booking', { params }).subscribe({
       next: (response) => {
         this.bookings = response;
+      },
+      error: (error) => {
+        console.error('Error:', error);
+      }
+    });
+  }
+
+  cancelBooking(bookingId: number): void {
+    console.log("Trying to cancel!");
+    console.log(bookingId);
+    const url = `/api/canceling/${bookingId}`;
+    this.http.put<any>(url, {}).subscribe({
+      next: (response) => {
+        console.log('Canceled successful:', response);
       },
       error: (error) => {
         console.error('Error:', error);
