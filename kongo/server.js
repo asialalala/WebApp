@@ -43,7 +43,7 @@ app.get('/booking', (req, res) => {
     });
   });
 
-  app.put('/canceling/:id', (req, res) => {
+app.put('/canceling/:id', (req, res) => {
     const { id } = req.params;
     console.log("Trying to cancel");
     console.log(id);
@@ -60,12 +60,32 @@ app.get('/booking', (req, res) => {
     }
   );
 });
-
-
   
-//   app.post('api/booking', (req, res) => {
+// TO DO! add specific query where standard, number of beds, price are defined it can be served with if's
+// primary idea: SELECT room.room_id, room.queen_bed_num, room.single_bed_num, room.standard, booking_room.booking_id, booking.start_date, booking.end_date FROM room LEFT JOIN booking_room ON booking_room.room_id=room.room_id LEFT JOIN booking ON booking_room.booking_id=booking.booking_id where (start_date > \'$2\' OR end_date < \'$1\') OR  booking_room.room_id IS NULL ;
+app.get('/find', (req, res) => {
+  const startDate = req.query.startDate;
+  const endDate = req.query.endDate;
+  console.log("Trying to find rooms");
+  console.log(startDate);
+  console.log(endDate);
+
+  pool.query('SELECT room.room_id, room.queen_bed_num, room.single_bed_num, room.standard FROM room LEFT JOIN booking_room ON booking_room.room_id=room.room_id LEFT JOIN booking ON booking_room.booking_id=booking.booking_id where (start_date > \'$2\' OR end_date < \'$1\') OR  booking_room.room_id IS NULL ;',[startDate, endDate],(err, result) => {
+    if (err) {
+      console.error('Error executing query:', err);
+      res.status(500).json({ error: 'Internal Server Error' });
+    } else {
+      res.json(result.rows);
+      console.log(result);
+    }
+  });
+});
+
+
+
+// app.post('api/find', (req, res) => {
 //     const { name, description } = req.body;
-//     console.log("Tying to post!");
+//     console.log("Tying to find!");
 //     pool.query(
 //       'INSERT INTO items (name, description) VALUES ($1, $2) RETURNING *',
 //       [name, description],

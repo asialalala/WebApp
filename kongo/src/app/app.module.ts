@@ -7,12 +7,16 @@ import { BasicComponent } from '../tutorial/basic.component';
 import { BookingComponent } from '../project/components/booking/booking.component';
 import { InsertHotelTypesService } from '../tutorial/insertHotelTypes.service';
 import { MailComponent } from '../project/components/email/email.component';
-import { DisplayBookingsComponent } from '../displayBookings/displayBookings.component';
+import { DisplayBookingsComponent } from './displayBookings/displayBookings.component';
 import { HttpClientModule } from '@angular/common/http';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
 import { CardModule } from 'primeng/card';
+import { FindRoomsComponent } from './findRooms/findRooms.component';
+import { InputGroupModule } from 'primeng/inputgroup';
+import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
+import { CalendarModule } from 'primeng/calendar';
 
 
 @NgModule({
@@ -21,7 +25,8 @@ import { CardModule } from 'primeng/card';
     BasicComponent,
     BookingComponent,
     MailComponent,
-    DisplayBookingsComponent
+    DisplayBookingsComponent,
+    FindRoomsComponent
   ],
   imports: [
     BrowserModule,
@@ -31,7 +36,10 @@ import { CardModule } from 'primeng/card';
     HttpClientModule,
     ButtonModule,
     InputTextModule,
-    CardModule
+    CardModule,
+    InputGroupModule,
+    InputGroupAddonModule,
+    CalendarModule
   ],
   providers: [
     provideClientHydration(),
