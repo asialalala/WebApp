@@ -7,11 +7,12 @@ import { BasicComponent } from '../tutorial/basic.component';
 import { BookingComponent } from '../project/components/booking/booking.component';
 import { InsertHotelTypesService } from '../tutorial/insertHotelTypes.service';
 import { MailComponent } from '../project/components/email/email.component';
-import { DisplayBookingsComponent } from '../display-bookings/display-bookings.component';
+import { DisplayBookingsComponent } from '../displayBookings/displayBookings.component';
 import { HttpClientModule } from '@angular/common/http';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
+import { CardModule } from 'primeng/card';
 
 
 @NgModule({
@@ -29,7 +30,8 @@ import { InputTextModule } from 'primeng/inputtext';
     FormsModule,
     HttpClientModule,
     ButtonModule,
-    InputTextModule
+    InputTextModule,
+    CardModule
   ],
   providers: [
     provideClientHydration(),

@@ -2,9 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 
 @Component({
-  selector: 'app-display-bookings',
-  templateUrl: './display-bookings.component.html',
-  styleUrls: ['./display-bookings.component.css']
+  selector: 'appDisplayBookings',
+  templateUrl: './displayBookings.component.html',
+  styleUrls: ['./displayBookings.component.css']
 })
 export class DisplayBookingsComponent {
   inputValue: string = '';

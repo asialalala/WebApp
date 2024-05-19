@@ -1,0 +1,38 @@
+<h2>Get Bookings</h2>
+<form (ngSubmit)="showMessage()">
+  <div class="flex flex-column gap-2">
+    <div class="flex flex-row gap-2">
+      <input pInputText id="email" [(ngModel)]="inputValue" name="email" required />
+    </div>
+    <small id="username-help">
+      Enter your e-mail to get your bookings.
+    </small>
+  </div>
+</form>
+
+<div *ngIf="bookings.length > 0">
+  <ul>
+    <ng-container *ngFor="let booking of bookings">
+      <div *ngIf="booking.booking_id!=lastBooking">
+        <p-card>
+          <ng-template pTemplate="title">
+            <span>Booking Details</span>
+          </ng-template>
+          <ng-template pTemplate="content">
+            <p>Start Date: {{ booking.start_date }}</p>
+            <p>End Date: {{ booking.end_date }}</p>
+            <p>Valid: {{ booking.valid }}</p>
+            <button pButton type="button" label="Cancel" (click)="onCancel(booking.booking_id)"></button>
+          </ng-template>
+        </p-card>
+      </div>
+      <ul>
+        <p>Queen Beds: {{ booking.queen_bed_num }}</p>
+        <p>Single Beds: {{ booking.single_bed_num }}</p>
+        <div class="empty-space"></div>
+        <p>{{ updateLastBooking(booking.booking_id) }}</p>
+      </ul>
+    </ng-container>
+  </ul>
+</div>
+<p *ngIf="bookings.length === 0">No bookings found</p>
