@@ -1,11 +1,9 @@
 <h2>Get Rooms</h2>
 
-<p-calendar 
-    [(ngModel)]="startDate" 
-    dateFormat="yy-mm-dd" />
-
-    <p-calendar 
-    [(ngModel)]="endDate" 
-    dateFormat="yy-mm-dd" />
-
-
+<div class="date">
+    <p-calendar [(ngModel)]="startDate" dateFormat="yy-mm-dd" />
+    <p-calendar [(ngModel)]="endDate" dateFormat="yy-mm-dd" />
+</div>
+<small id="startDate-help">
+    Enter start and end date.
+</small>
