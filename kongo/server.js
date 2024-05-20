@@ -12,6 +12,10 @@ app.listen(port, () => {
 // Establishing a connection to PostgreSQL
 const { Pool } = require('pg')
 
+/* 
+* Use this client when you want to add or upadte something in database
+* Conection to bazydanych2024
+*/
 const pool = new Pool({
   user: 'postgres',
   host: '34.132.191.171',
@@ -19,9 +23,27 @@ const pool = new Pool({
   password: 'BazyDanych2024',
   port: 5432,
 })
+
+/* 
+* Use this client when you want to read something from database
+* Conection to bazydanych2024-replica
+*/
+const repl = new Pool({
+  user: 'postgres',
+  host: '34.42.198.142',
+  database: 'hotel',
+  password: 'BazyDanych2024',
+  port: 5432,
+})
+
 pool.connect(function(err) {
   if (err) throw err;
-  console.log("Connected!");
+  console.log("bazydanych2024 CONNECTED!");
+});
+
+repl.connect(function(err) {
+  if (err) throw err;
+  console.log("bazydanych2024-replica CONNECTED!");
 });
 
 app.use(bodyParser.json());
@@ -32,7 +54,7 @@ app.get('/booking', (req, res) => {
     console.log("Trying to get bookings");
     console.log(mail);
 
-    pool.query('SELECT booking.booking_id, booking.start_date, booking.end_date, booking.valid, room.queen_bed_num, room.single_bed_num, mail FROM booking JOIN booking_room ON booking.booking_id=booking_room.booking_id JOIN room ON room.room_id=booking_room.room_id JOIN customer ON booking.customer_id=customer.customer_id WHERE customer.mail=$1;',[mail] ,(err, result) => {
+    repl.query('SELECT booking.booking_id, booking.start_date, booking.end_date, booking.valid, room.queen_bed_num, room.single_bed_num, mail FROM booking JOIN booking_room ON booking.booking_id=booking_room.booking_id JOIN room ON room.room_id=booking_room.room_id JOIN customer ON booking.customer_id=customer.customer_id WHERE customer.mail=$1;',[mail] ,(err, result) => {
       if (err) {
         console.error('Error executing query:', err);
         res.status(500).json({ error: 'Internal Server Error' });
@@ -70,7 +92,7 @@ app.get('/find', (req, res) => {
   console.log(startDate);
   console.log(endDate);
 
-  pool.query('SELECT room.room_id, room.queen_bed_num, room.single_bed_num, room.standard FROM room LEFT JOIN booking_room ON booking_room.room_id=room.room_id LEFT JOIN booking ON booking_room.booking_id=booking.booking_id where (start_date > $2 OR end_date < $1) OR  booking_room.room_id IS NULL ;', [startDate, endDate],(err, result) => {
+  repl.query('SELECT room.room_id, room.queen_bed_num, room.single_bed_num, room.standard FROM room LEFT JOIN booking_room ON booking_room.room_id=room.room_id LEFT JOIN booking ON booking_room.booking_id=booking.booking_id where (start_date > $2 OR end_date < $1) OR  booking_room.room_id IS NULL  GROUP BY room.room_id ORDER BY room.room_id ;', [startDate, endDate],(err, result) => {
     if (err) {
       console.error('Error executing query:', err);
       res.status(500).json({ error: 'Internal Server Error' });
@@ -80,66 +102,3 @@ app.get('/find', (req, res) => {
     }
   });
 });
-
-
-
-// app.post('api/find', (req, res) => {
-//     const { name, description } = req.body;
-//     console.log("Tying to find!");
-//     pool.query(
-//       'INSERT INTO items (name, description) VALUES ($1, $2) RETURNING *',
-//       [name, description],
-//       (err, result) => {
-//         if (err) {
-//           console.error('Error executing query:', err);
-//           res.status(500).json({ error: 'Internal Server Error' });
-//         } else {
-//           res.json(result.rows[0]);
-//         }
-//       }
-//     );
-//   });
-
-// //   Implementing CRUD operations
-// // Create Read Update Delete
-
-// app.put('api/booking:id', (req, res) => {
-//     const { id } = req.params;
-//     const { name, description } = req.body;
-//     console.log("Tying to put!");
-
-//     pool.query(
-//       'UPDATE items SET name = $1, description = $2 WHERE id = $3 RETURNING *',
-//       [name, description, id],
-//       (err, result) => {
-//         if (err) {
-//           console.error('Error executing query:', err);
-//           res.status(500).json({ error: 'Internal Server Error' });
-//         } else if (result.rows.length === 0) {
-//           res.status(404).json({ error: 'Item not found' });
-//         } else {
-//           res.json(result.rows[0]);
-//         }
-//       }
-//     );
-//   });
-  
-//   app.delete('api/booking:id', (req, res) => {
-//     const { id } = req.params;
-//     console.log("Tying to delete!");
-
-//     pool.query(
-//       'DELETE FROM items WHERE id = $1 RETURNING *',
-//       [id],
-//       (err, result) => {
-//         if (err) {
-//           console.error('Error executing query:', err);
-//           res.status(500).json({ error: 'Internal Server Error' });
-//         } else if (result.rows.length === 0) {
-//           res.status(404).json({ error: 'Item not found' });
-//         } else {
-//           res.json(result.rows[0]);
-//         }
-//       }
-//     );
-//   });
