@@ -10,7 +10,8 @@
 //   phone: string = "";
 // }
 
-import { Component, Input } from "@angular/core";
+import { Component, Input, OnInit } from "@angular/core";
+import { FormBuilder,FormGroup } from "@angular/forms";
 
 
 
@@ -19,10 +20,27 @@ import { Component, Input } from "@angular/core";
   templateUrl: './bookRoom.component.html',
   styleUrl: './bookRoom.component.css'
 })
-export class BookRoomComponent {
-  @Input() type: string = "success";
-  firstName: string = "";
-  lastName: string = "";
-  mail: string = "";
-  phone: string = "";
+export class BookRoomComponent implements OnInit{
+  bookingForm: FormGroup;
+
+  constructor(private fb: FormBuilder) {
+    this.bookingForm = this.fb.group({
+      firstName: [''],
+      lastName: [''],
+      email: [''],
+      phoneNumber: ['']
+    });
+  }
+  ngOnInit(): void {}
+
+  onSubmit(): void {
+    console.log(this.bookingForm.value);
+  }
+
+  onConfirm(): void{
+    // call end point to add every bookings
+    // show message about confirmation
+    // wait
+    //delete component
+  }
 }
