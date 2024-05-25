@@ -35,12 +35,12 @@ export class FindRoomsComponent {
       console.log(formattedStartDate);
 
       this.getItems(formattedStartDate, formattedEndDate);
+      console.log(this.rooms);
     }
     else
     {
-      this.msg = "The start date can't be ";
+      this.msg = "The start date can't be greater than end date ";
     }
-
 
   }
 
@@ -55,9 +55,12 @@ export class FindRoomsComponent {
         console.error('Error:', error);
       }
     });
-
-    console.log(this.rooms);
   }
+
+  onBook(roomId: number): void {
+  console.log("Book room nr ", roomId);
+  }
+
 }
 
 interface Room {
