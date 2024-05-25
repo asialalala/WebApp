@@ -8,4 +8,21 @@
     Enter start and end date.
 </small>
 <button pButton type="button" label="Find rooms" (click)="onFind()"></button>
+<div> {{this.msg}}</div>
+</div>
+
+<div>
+    <ng-container *ngFor="let room of rooms">
+        <p-card>
+            <!-- <ng-template pTemplate="title">
+              <span>Booking Details</span>
+            </ng-template> -->
+            <ng-template pTemplate="content">
+                <p>Room ID: {{ room.room_id }}</p>
+                <p>Queen Beds: {{ room.queen_bed_num }}</p>
+                <p>Single Beds: {{ room.single_bed_num }}</p>
+                <p>Standard: {{room.standard }}</p>
+            </ng-template>
+          </p-card>
+    </ng-container>
 </div>
