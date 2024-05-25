@@ -1,5 +1,6 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { Component } from '@angular/core';
+import { Component, ComponentFactory, ComponentFactoryResolver, ViewChild, ViewContainerRef } from '@angular/core';
+import { BookRoomComponent } from '../bookRoom/bookRoom.component';
 
 @Component({
   selector: 'appFindRooms',
@@ -11,8 +12,20 @@ export class FindRoomsComponent {
   endDate: Date = new Date();
   rooms: Room[] = [];
   msg: string = "";
+  @ViewChild("alertContainer", { read: ViewContainerRef }) container: any;
+  componentRef: any;
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient, private resolver: ComponentFactoryResolver) { }
+
+  createComponent() {
+    if (this.container) {
+      this.container.clear();
+      const factory: ComponentFactory<BookRoomComponent> = this.resolver.resolveComponentFactory(BookRoomComponent);
+      this.componentRef = this.container.createComponent(factory);
+    } else {
+      console.error('Container is not defined');
+    }
+  }
 
   onFind(): void {
     this.msg = ""
@@ -37,8 +50,7 @@ export class FindRoomsComponent {
       this.getItems(formattedStartDate, formattedEndDate);
       console.log(this.rooms);
     }
-    else
-    {
+    else {
       this.msg = "The start date can't be greater than end date ";
     }
 
@@ -58,14 +70,14 @@ export class FindRoomsComponent {
   }
 
   onAddBook(roomId: number): void {
-  console.log("Add to the booking room nr ", roomId);
+    console.log("Add to the booking room nr ", roomId);
     // remember date
     // add room number to vector
   }
 
   onBook(): void {
     console.log("Book");
-    // display new component to ful fill customer data
+    this.createComponent();
   }
 
 }

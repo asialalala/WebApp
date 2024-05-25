@@ -1,30 +1,35 @@
 <h2>Get Rooms</h2>
 <div class="submitDate">
-<div class="date">
-    <p-calendar [(ngModel)]="startDate" dateFormat="yy-mm-dd" />
-    <p-calendar [(ngModel)]="endDate" dateFormat="yy-mm-dd" />
-</div>
-<small id="startDate-help">
-    Enter start and end date.
-</small>
-<button pButton type="button" label="Find rooms" (click)="onFind()"></button>
-<div> {{this.msg}}</div>
+    <div class="date">
+        <p-calendar [(ngModel)]="startDate" dateFormat="yy-mm-dd" />
+        <p-calendar [(ngModel)]="endDate" dateFormat="yy-mm-dd" />
+    </div>
+    <small id="startDate-help">
+        Enter start and end date.
+    </small>
+    <button pButton type="button" label="Find rooms" (click)="onFind()"></button>
+    <div> {{this.msg}}</div>
 </div>
 
 <div>
     <button pButton type="button" label="Book chosen rooms" (click)="onBook()"></button>
-    
+
+    <div style="text-align:center">
+        <template #alertContainer></template>
+    </div>
+
     <ng-container *ngFor="let room of rooms">
         <p-card>
             <ng-template pTemplate="title">
-              <span>Room ID: {{ room.room_id }}</span>
+                <span>Room ID: {{ room.room_id }}</span>
             </ng-template>
             <ng-template pTemplate="content">
                 <p>Queen Beds: {{ room.queen_bed_num }}</p>
                 <p>Single Beds: {{ room.single_bed_num }}</p>
                 <p>Standard: {{room.standard }}</p>
-                <button pButton type="button" label="Add this room to booking" (click)="onAddBook(room.room_id)"></button>
+                <button pButton type="button" label="Add this room to booking"
+                    (click)="onAddBook(room.room_id)"></button>
             </ng-template>
-          </p-card>
+        </p-card>
     </ng-container>
 </div>
