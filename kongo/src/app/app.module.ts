@@ -17,6 +17,7 @@ import { FindRoomsComponent } from './findRooms/findRooms.component';
 import { InputGroupModule } from 'primeng/inputgroup';
 import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
 import { CalendarModule } from 'primeng/calendar';
+import { BookRoomComponent } from './bookRoom/bookRoom.component';
 
 
 @NgModule({
@@ -26,7 +27,8 @@ import { CalendarModule } from 'primeng/calendar';
     BookingComponent,
     MailComponent,
     DisplayBookingsComponent,
-    FindRoomsComponent
+    FindRoomsComponent,
+    BookRoomComponent
   ],
   imports: [
     BrowserModule,

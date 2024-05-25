@@ -12,6 +12,8 @@
 </div>
 
 <div>
+    <button pButton type="button" label="Book chosen rooms" (click)="onBook()"></button>
+    
     <ng-container *ngFor="let room of rooms">
         <p-card>
             <ng-template pTemplate="title">
@@ -21,7 +23,7 @@
                 <p>Queen Beds: {{ room.queen_bed_num }}</p>
                 <p>Single Beds: {{ room.single_bed_num }}</p>
                 <p>Standard: {{room.standard }}</p>
-                <button pButton type="button" label="Book this room" (click)="onBook(room.room_id)"></button>
+                <button pButton type="button" label="Add this room to booking" (click)="onAddBook(room.room_id)"></button>
             </ng-template>
           </p-card>
     </ng-container>

@@ -57,8 +57,15 @@ export class FindRoomsComponent {
     });
   }
 
-  onBook(roomId: number): void {
-  console.log("Book room nr ", roomId);
+  onAddBook(roomId: number): void {
+  console.log("Add to the booking room nr ", roomId);
+    // remember date
+    // add room number to vector
+  }
+
+  onBook(): void {
+    console.log("Book");
+    // display new component to ful fill customer data
   }
 
 }
