@@ -1,6 +1,7 @@
-import { AuthTypes, Connector, IpAddressTypes } from '@google-cloud/cloud-sql-connector'
- 
-// creates a simple Express server that listens on port 3000
+// set env variable - path to credentials
+process.env.GOOGLE_APPLICATION_CREDENTIALS = 'zeta-instrument-CR.json';
+
+// creates a simple Express server that listens on port 4000
 const express = require('express');
 const app = express();
 
@@ -13,10 +14,12 @@ app.listen(port, () => {
 
 // Establishing a connection to PostgreSQL
 const { Pool } = require('pg')
+const { AuthTypes, Connector, IpAddressTypes } = require('@google-cloud/cloud-sql-connector')
 
+// TLS connection
 const connector = new Connector();
-const options = await connector.getOptions( {
-  instanceConnectionName: '',
+const options = connector.getOptions( {
+  instanceConnectionName: 'zeta-instrument-421716:us-central1:bazydanychhotel2024',
   ipType: IpAddressTypes.PUBLIC,
   auhType: AuthTypes.PASSWORD
 });
@@ -31,6 +34,8 @@ const pool = new Pool({
   database: 'hotel',
   password: 'BazyDanych2024',
   port: 5432,
+  max: 5,
+  ...options
 })
 
 /* 
@@ -43,6 +48,8 @@ const repl = new Pool({
   database: 'hotel',
   password: 'BazyDanych2024',
   port: 5432,
+  max: 5,
+  ...options
 })
 
 pool.connect(function(err) {
