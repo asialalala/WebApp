@@ -10,6 +10,7 @@
 //   phone: string = "";
 // }
 
+import { HttpClient, HttpParams } from "@angular/common/http";
 import { Component, DestroyRef, Input, OnInit, inject } from "@angular/core";
 import { FormBuilder, FormGroup } from "@angular/forms";
 
@@ -30,7 +31,7 @@ export class BookRoomComponent implements OnInit {
 
   private destroyRef = inject(DestroyRef);
 
-  constructor(private fb: FormBuilder) {
+  constructor(private http: HttpClient, private fb: FormBuilder) {
     this.bookingForm = this.fb.group({
       firstName: [''],
       lastName: [''],
@@ -45,10 +46,35 @@ export class BookRoomComponent implements OnInit {
     console.log("Rooms", this.bookingRooms.length);
     console.log("Since ", this.startDate, " until ", this.endDate);
     this.msg = "Successful booking";
+
+    this.addCustomer();
+
     this.componentRef.destroy();
-    
+
     //send data to endpoint
     // wait
     //delete component
+  }
+
+  addCustomer(): void {
+    console.log("Trying to add customer!");
+    const url = `/api/customer`;
+  
+    // Use parameters in query body
+    const body = {
+      firstName: this.bookingForm.value.firstName,
+      lastName: this.bookingForm.value.lastName,
+      email: this.bookingForm.value.email,
+      phoneNumber: this.bookingForm.value.phoneNumber
+    };
+  
+    this.http.put<any>(url, body).subscribe({
+      next: (response) => {
+        console.log('Customer added successful:', response);
+      },
+      error: (error) => {
+        console.error('Error:', error);
+      }
+    });
   }
 }

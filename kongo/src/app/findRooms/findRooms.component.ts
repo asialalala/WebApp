@@ -58,7 +58,6 @@ export class FindRoomsComponent {
     else {
       this.msg = "The start date can't be greater than end date ";
     }
-
   }
 
   getItems(start: string, end: string): void {

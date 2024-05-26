@@ -102,3 +102,26 @@ app.get('/find', (req, res) => {
     }
   });
 });
+
+
+// Add customer
+app.put('/customer', (req, res) => {
+  const { firstName, lastName, email, phoneNumber } = req.body;
+
+  console.log("Trying to add customer");
+  console.log(firstName);
+  console.log(lastName);
+  console.log(email);
+  console.log(phoneNumber);
+
+  pool.query('INSERT INTO customer (first_name, last_name, mail, phone) VALUES ($1, $2, $3, $4) RETURNING *', [firstName, lastName, email, phoneNumber], (err, result) => {
+    if (err) {
+      console.error('Error executing query:', err);
+      res.status(500).json({ error: 'Internal Server Error' });
+    } else if (result.rows.length === 0) {
+      res.status(404).json({ error: 'Item not found' });
+    } else {
+      res.json(result.rows[0]);
+    }
+  });
+});
