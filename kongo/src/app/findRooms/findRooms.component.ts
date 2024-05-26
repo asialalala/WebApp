@@ -12,6 +12,7 @@ export class FindRoomsComponent {
   endDate: Date = new Date();
   rooms: Room[] = [];
   msg: string = "";
+  bookingRooms: number[] = [];
   @ViewChild("alertContainer", { read: ViewContainerRef }) container: any;
   componentRef: any;
 
@@ -22,6 +23,9 @@ export class FindRoomsComponent {
       this.container.clear();
       const factory: ComponentFactory<BookRoomComponent> = this.resolver.resolveComponentFactory(BookRoomComponent);
       this.componentRef = this.container.createComponent(factory);
+      this.componentRef.instance.bookingRooms = this.bookingRooms;
+      this.componentRef.instance.startDate = this.startDate;
+      this.componentRef.instance.endDate = this.endDate;
     } else {
       console.error('Container is not defined');
     }
@@ -71,8 +75,7 @@ export class FindRoomsComponent {
 
   onAddBook(roomId: number): void {
     console.log("Add to the booking room nr ", roomId);
-    // remember date
-    // add room number to vector
+    this.bookingRooms.push(roomId);
   }
 
   onBook(): void {

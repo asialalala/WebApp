@@ -11,7 +11,7 @@
 // }
 
 import { Component, Input, OnInit } from "@angular/core";
-import { FormBuilder,FormGroup } from "@angular/forms";
+import { FormBuilder, FormGroup } from "@angular/forms";
 
 
 
@@ -20,8 +20,11 @@ import { FormBuilder,FormGroup } from "@angular/forms";
   templateUrl: './bookRoom.component.html',
   styleUrl: './bookRoom.component.css'
 })
-export class BookRoomComponent implements OnInit{
+export class BookRoomComponent implements OnInit {
   bookingForm: FormGroup;
+  @Input() bookingRooms: number[] = [];
+  @Input() startDate: Date = new Date();
+  @Input() endDate: Date = new Date();
 
   constructor(private fb: FormBuilder) {
     this.bookingForm = this.fb.group({
@@ -31,13 +34,12 @@ export class BookRoomComponent implements OnInit{
       phoneNumber: ['']
     });
   }
-  ngOnInit(): void {}
+  ngOnInit(): void { }
 
   onSubmit(): void {
     console.log(this.bookingForm.value);
-  }
-
-  onConfirm(): void{
+    console.log("Rooms", this.bookingRooms.length);
+    console.log("Since ", this.startDate, " Than ", this.endDate);
     // call end point to add every bookings
     // show message about confirmation
     // wait
