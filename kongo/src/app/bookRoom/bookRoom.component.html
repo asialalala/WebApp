@@ -1,21 +1,25 @@
-<p>Enter your data to book!</p>
-<p-inputGroup>
-    <p-inputGroupAddon>
+<title>Enter your data to book!</title>
+<form [formGroup]="bookingForm" (ngSubmit)="onSubmit()">
+    <p-inputGroup>
+      <p-inputGroupAddon>
         <i class="pi pi-user"></i>
-    </p-inputGroupAddon>
-    <input pInputText placeholder="First Name" />
-</p-inputGroup>
-<p-inputGroup>
-    <p-inputGroupAddon>
+      </p-inputGroupAddon>
+      <input pInputText placeholder="First Name" formControlName="firstName" />
+    </p-inputGroup>
+    <p-inputGroup>
+      <p-inputGroupAddon>
         <i class="pi pi-user"></i>
-    </p-inputGroupAddon>
-    <input pInputText placeholder="Last Name" />
-</p-inputGroup>
-<p-inputGroup>
-    <p-inputGroupAddon><i class="pi pi-mail"></i></p-inputGroupAddon>
-    <input type="mail" pInputText placeholder="Mail" />
-</p-inputGroup>
-<p-inputGroup>
-    <p-inputGroupAddon></p-inputGroupAddon>
-    <input type="text" pInputText placeholder="Phone number" />
-</p-inputGroup>
+      </p-inputGroupAddon>
+      <input pInputText placeholder="Last Name" formControlName="lastName" />
+    </p-inputGroup>
+    <p-inputGroup>
+      <p-inputGroupAddon><i class="pi pi-mail"></i></p-inputGroupAddon>
+      <input type="mail" pInputText placeholder="Mail" formControlName="email" />
+    </p-inputGroup>
+    <p-inputGroup>
+      <p-inputGroupAddon></p-inputGroupAddon>
+      <input type="text" pInputText placeholder="Phone number" formControlName="phoneNumber" />
+    </p-inputGroup>
+    <button pButton type="submit">Confirm and cubmit data</button>
+  </form>
+  <div> {{this.msg}}</div>

@@ -18,6 +18,7 @@ import { InputGroupModule } from 'primeng/inputgroup';
 import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
 import { CalendarModule } from 'primeng/calendar';
 import { BookRoomComponent } from './bookRoom/bookRoom.component';
+import { ReactiveFormsModule } from '@angular/forms';
 
 
 @NgModule({
@@ -41,7 +42,8 @@ import { BookRoomComponent } from './bookRoom/bookRoom.component';
     CardModule,
     InputGroupModule,
     InputGroupAddonModule,
-    CalendarModule
+    CalendarModule,
+    ReactiveFormsModule
   ],
   providers: [
     provideClientHydration(),
