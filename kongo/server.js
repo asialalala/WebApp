@@ -157,25 +157,3 @@ app.put('/customer', (req, res) => {
 
 }
 );
-
-
-// Find customer with specific first name, last name and mail
-app.get('/findCustomer', (req, res) => {
-  const firstName = req.query.firstName;
-  const lastName = req.query.lastName;
-  const mail = req.query.mail;
-  console.log("Trying to find rooms");
-  console.log(firstName);
-  console.log(lastName);
-  console.log(mail);
-
-  repl.query('SELECT customer_id FROM customer WHERE first_name = $1 AND last_name = $2 AND mail = $3;', [firstName, lastName, mail],(err, result) => {
-    if (err) {
-      console.error('Error executing query:', err);
-      res.status(500).json({ error: 'Internal Server Error' });
-    } else {
-      res.json(result.rows);
-      console.log(result);
-    }
-  });
-});

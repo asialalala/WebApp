@@ -1,15 +1,3 @@
-// @Component({
-//   selector: 'bookRoom',
-//   templateUrl: './bookRoom.component.html',
-//   styleUrl: './bookRoom.component.css'
-// })
-// export class BookRoomComponent {
-//   firstName: string = "";
-//   lastName: string = "";
-//   mail: string = "";
-//   phone: string = "";
-// }
-
 import { HttpClient, HttpParams } from "@angular/common/http";
 import { Component, DestroyRef, Input, OnInit, inject } from "@angular/core";
 import { FormBuilder, FormGroup } from "@angular/forms";
@@ -48,7 +36,6 @@ export class BookRoomComponent implements OnInit {
     console.log("Since ", this.startDate, " until ", this.endDate);
     this.msg = "Booking...";
 
-    //this.getSpecyficCustomer()
     let cutomerNum = this.customers.length;
     console.log("Ilosc takich customerow: ",  cutomerNum)
     if (cutomerNum <= 0) {
@@ -75,19 +62,6 @@ export class BookRoomComponent implements OnInit {
     this.http.put<any>(url, body).subscribe({
       next: (response) => {
         console.log('Customer added successful:', response);
-      },
-      error: (error) => {
-        console.error('Error:', error);
-      }
-    });
-  }
-
-  getSpecyficCustomer(): void {
-    console.log("Trying to connect!");
-    const params = new HttpParams().set('firstName', this.bookingForm.value.firstName).set('lastName', this.bookingForm.value.lastName).set('mail', this.bookingForm.value.mail);
-    this.http.get<any>('/api/find', { params }).subscribe({
-      next: (response) => {
-        this.customers = response;
       },
       error: (error) => {
         console.error('Error:', error);
