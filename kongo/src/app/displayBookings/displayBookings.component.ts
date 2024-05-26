@@ -13,7 +13,7 @@ export class DisplayBookingsComponent {
   lastBooking: number = 0;
 
   constructor(private http: HttpClient) { }
-
+  
   showMessage(): void {
     this.email = this.inputValue;
     this.getItems();
@@ -54,6 +54,7 @@ export class DisplayBookingsComponent {
       }
     });
   }
+  
 }
 
 // Definiowanie interfejsu Booking

@@ -26,6 +26,7 @@ export class FindRoomsComponent {
       this.componentRef.instance.bookingRooms = this.bookingRooms;
       this.componentRef.instance.startDate = this.startDate;
       this.componentRef.instance.endDate = this.endDate;
+      this.componentRef.instance.componentRef = this.componentRef;
     } else {
       console.error('Container is not defined');
     }
