@@ -27,6 +27,7 @@ export class BookRoomComponent implements OnInit {
   @Input() startDate: Date = new Date();
   @Input() endDate: Date = new Date();
   @Input() componentRef: any;
+  customers: number[] = [];
   msg = "";
 
   private destroyRef = inject(DestroyRef);
@@ -45,21 +46,24 @@ export class BookRoomComponent implements OnInit {
     console.log(this.bookingForm.value);
     console.log("Rooms", this.bookingRooms.length);
     console.log("Since ", this.startDate, " until ", this.endDate);
-    this.msg = "Successful booking";
+    this.msg = "Booking...";
 
-    this.addCustomer();
+    this.getSpecyficCustomer()
+    let cutomerNum = this.customers.length;
+    console.log("Ilosc takich customerow: ",  cutomerNum)
+    if (cutomerNum <= 0) {
+      this.addCustomer();
+    }
 
+    // add booking, create endpoint
     this.componentRef.destroy();
 
-    //send data to endpoint
-    // wait
-    //delete component
   }
 
   addCustomer(): void {
     console.log("Trying to add customer!");
     const url = `/api/customer`;
-  
+
     // Use parameters in query body
     const body = {
       firstName: this.bookingForm.value.firstName,
@@ -67,10 +71,23 @@ export class BookRoomComponent implements OnInit {
       email: this.bookingForm.value.email,
       phoneNumber: this.bookingForm.value.phoneNumber
     };
-  
+
     this.http.put<any>(url, body).subscribe({
       next: (response) => {
         console.log('Customer added successful:', response);
+      },
+      error: (error) => {
+        console.error('Error:', error);
+      }
+    });
+  }
+
+  getSpecyficCustomer(): void {
+    console.log("Trying to connect!");
+    const params = new HttpParams().set('firstName', this.bookingForm.value.firstName).set('lastName', this.bookingForm.value.lastName).set('mail', this.bookingForm.value.mail);
+    this.http.get<any>('/api/find', { params }).subscribe({
+      next: (response) => {
+        this.customers = response;
       },
       error: (error) => {
         console.error('Error:', error);
