@@ -17,7 +17,6 @@ Run `ng build --configuration production` to build the project. The build artifa
 ## Run
 Run `node server.js` and paste `http://localhost:4000` into your website to use the application.
 
-asd test 1 2 3
 <!-- ## Running unit tests
 
 Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io). -->

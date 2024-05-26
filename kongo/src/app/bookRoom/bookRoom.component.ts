@@ -48,7 +48,7 @@ export class BookRoomComponent implements OnInit {
     console.log("Since ", this.startDate, " until ", this.endDate);
     this.msg = "Booking...";
 
-    this.getSpecyficCustomer()
+    //this.getSpecyficCustomer()
     let cutomerNum = this.customers.length;
     console.log("Ilosc takich customerow: ",  cutomerNum)
     if (cutomerNum <= 0) {

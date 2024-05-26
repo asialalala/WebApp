@@ -46,6 +46,8 @@ repl.connect(function(err) {
   console.log("bazydanych2024-replica CONNECTED!");
 });
 
+
+
 app.use(bodyParser.json());
 
 // Defining API endpoints
@@ -103,6 +105,9 @@ app.get('/find', (req, res) => {
   });
 });
 
+function IsNewCustomer(req, res, next) {
+
+}
 
 // Add customer
 app.put('/customer', (req, res) => {
@@ -114,6 +119,21 @@ app.put('/customer', (req, res) => {
   console.log(email);
   console.log(phoneNumber);
 
+  console.log(res.statusCode);
+
+  repl.query('SELECT mail FROM customer WHERE mail LIKE $1', [email], (err, check) => {
+    if (err) {
+      console.error('Error executing query:', err);
+      res.status(500).json({ error: 'Internal Server Error' });
+    } else if (check.rows.length === 0) {
+      res.status(110); // new customer 
+      console.log("New customer", check.rowCount);
+    } else { 
+      res.status(111); // already in DB
+    }
+  });
+
+  if(res.statusCode === 110) {
   pool.query('INSERT INTO customer (first_name, last_name, mail, phone) VALUES ($1, $2, $3, $4) RETURNING *', [firstName, lastName, email, phoneNumber], (err, result) => {
     if (err) {
       console.error('Error executing query:', err);
@@ -124,7 +144,10 @@ app.put('/customer', (req, res) => {
       res.json(result.rows[0]);
     }
   });
-});
+} else console.log("Not added - already in DB");
+
+}
+);
 
 
 // Find customer with specific first name, last name and mail
