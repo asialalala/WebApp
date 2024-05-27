@@ -1,4 +1,4 @@
-// import { AuthTypes, Connector, IpAddressTypes } from '@google-cloud/cloud-sql-connector'
+import { AuthTypes, Connector, IpAddressTypes } from '@google-cloud/cloud-sql-connector'
 
 // creates a simple Express server that listens on port 3000
 const express = require('express');
@@ -14,12 +14,12 @@ app.listen(port, () => {
 // Establishing a connection to PostgreSQL
 const { Pool } = require('pg')
 
-// const connector = new Connector();
-// const options = await connector.getOptions( {
-//   instanceConnectionName: '',
-//   ipType: IpAddressTypes.PUBLIC,
-//   auhType: AuthTypes.PASSWORD
-// });
+const connector = new Connector();
+const options = await connector.getOptions( {
+  instanceConnectionName: '',
+  ipType: IpAddressTypes.PUBLIC,
+  auhType: AuthTypes.PASSWORD
+});
 
 /* 
 * Use this client when you want to add or upadte something in database
