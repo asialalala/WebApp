@@ -155,10 +155,10 @@ app.put('/bookRooms', (req, res) => {
   console.log(rooms);
 
   // find customer id
-  repl.query('SELECT customer_id FROM customer WHERE mail LIKE $1', [email], (err, result) => {
+  repl.query('SELECT customer_id FROM customer WHERE mail = $1', [email], (err, result) => { // Using '=' instead of 'LIKE'
     if (err) {
       console.error('Error executing query:', err);
-      res.status(500).json({ error: 'Internal Server Error' });
+      return res.status(500).json({ error: 'Internal Server Error' });
     } else {
       console.log('Result length:', result.rows.length);
       if (result.rows.length != 0) {
@@ -168,14 +168,41 @@ app.put('/bookRooms', (req, res) => {
         const valid = "pending";
 
         // Insert booking into bookings table
-        pool.query('INSERT INTO booking (start_date, end_date, customer_id, comment, valid, price) VALUES ($1, $2, $3, $4, $5, $6)',
+        pool.query('INSERT INTO booking (start_date, end_date, customer_id, comment, valid, price) VALUES ($1, $2, $3, $4, $5, $6) RETURNING booking_id',
           [startDate, endDate, customerID, comment, valid, price],
           (insertErr, insertResult) => {
             if (insertErr) {
               console.error('Error executing insert query:', insertErr);
-              res.status(500).json({ error: 'Internal Server Error' });
+              return res.status(500).json({ error: 'Internal Server Error' });
             } else {
-              res.status(200).json({ message: 'Booking successful' });
+              const bookingId = insertResult.rows[0].booking_id;
+              const bookingRoomPromises = [];
+
+              for (let i = 0; i < rooms.length; i++) {
+                console.log("Room ", rooms[i]);
+                bookingRoomPromises.push(new Promise((resolve, reject) => {
+                  pool.query('INSERT INTO booking_room (booking_id, room_id) VALUES ($1, $2) RETURNING *', [bookingId, rooms[i]], (err, result) => {
+                    if (err) {
+                      console.error('Error executing query:', err);
+                      reject('Internal Server Error');
+                    } else if (result.rows.length === 0) {
+                      reject('Item not found');
+                    } else {
+                      resolve(result.rows[0]);
+                    }
+                  });
+                }));
+              }
+
+              Promise.all(bookingRoomPromises)
+                .then(results => {
+                  console.log("Added to booking_room");
+                  res.status(200).json({ message: 'Booking successful', booking_id: bookingId });
+                })
+                .catch(error => {
+                  console.error('Error during booking room insertion:', error);
+                  res.status(500).json({ error: error });
+                });
             }
           }
         );
@@ -185,22 +212,3 @@ app.put('/bookRooms', (req, res) => {
     }
   });
 });
-
-// console.log("Added to booking");
-// bookingID : number = 0; // HOW TO GET bookingID?
-
-// for (let i = 0; i < rooms.length; i++) {
-//   console.log("Room ", rooms[i]);
-//   pool.query('INSERT INTO booking_room (booking_id, room_id) VALUES ($1, $2) RETURNING *', [ bookingID,rooms[i]], (err, result) => {
-//     if (err) {
-//       console.error('Error executing query:', err);
-//       res.status(500).json({ error: 'Internal Server Error' });
-//     } else if (result.rows.length === 0) {
-//       res.status(404).json({ error: 'Item not found' });
-//     } else {
-//       res.json(result.rows[0]);
-//     }
-//   });
-// }
-// console.log("Added to booking_room");
-
