@@ -35,8 +35,21 @@ export class BookRoomComponent implements OnInit {
     console.log("Rooms", this.bookingRooms.length);
     console.log("Since ", this.startDate, " until ", this.endDate);
     this.msg = "Booking...";
-    this.addCustomer();
-    this.bookRooms();
+
+    // Call addCustomer and chain bookRooms to it
+    this.addCustomer().subscribe({
+      next: (response) => {
+        console.log('Customer added successful:', response);
+        this.bookRooms();
+      },
+      error: (error) => {
+        console.error('Error adding customer:', error);
+        // Handle the error as needed
+      },
+      complete: () => {
+        this.componentRef.destroy();
+      }
+    });
 
     this.componentRef.destroy();
 
@@ -67,10 +80,10 @@ export class BookRoomComponent implements OnInit {
   }
 
 
-  addCustomer(): void {
+  addCustomer() {
     console.log("Trying to add customer!");
     const url = `/api/customer`;
-
+  
     // Use parameters in query body
     const body = {
       firstName: this.bookingForm.value.firstName,
@@ -78,14 +91,7 @@ export class BookRoomComponent implements OnInit {
       email: this.bookingForm.value.email,
       phoneNumber: this.bookingForm.value.phoneNumber
     };
-
-    this.http.put<any>(url, body).subscribe({
-      next: (response) => {
-        console.log('Customer added successful:', response);
-      },
-      error: (error) => {
-        console.error('Error:', error);
-      }
-    });
+  
+    return this.http.put<any>(url, body);
   }
 }
