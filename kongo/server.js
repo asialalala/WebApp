@@ -1,5 +1,5 @@
 // import { AuthTypes, Connector, IpAddressTypes } from '@google-cloud/cloud-sql-connector'
- 
+
 // creates a simple Express server that listens on port 3000
 const express = require('express');
 const app = express();
@@ -45,12 +45,12 @@ const repl = new Pool({
   port: 5432,
 })
 
-pool.connect(function(err) {
+pool.connect(function (err) {
   if (err) throw err;
   console.log("bazydanych2024 CONNECTED!");
 });
 
-repl.connect(function(err) {
+repl.connect(function (err) {
   if (err) throw err;
   console.log("bazydanych2024-replica CONNECTED!");
 });
@@ -61,49 +61,11 @@ app.use(bodyParser.json());
 
 // Defining API endpoints
 app.get('/booking', (req, res) => {
-    const mail = req.query.mail;
-    console.log("Trying to get bookings");
-    console.log(mail);
+  const mail = req.query.mail;
+  console.log("Trying to get bookings");
+  console.log(mail);
 
-    repl.query('SELECT booking.booking_id, booking.start_date, booking.end_date, booking.valid, room.queen_bed_num, room.single_bed_num, mail FROM booking JOIN booking_room ON booking.booking_id=booking_room.booking_id JOIN room ON room.room_id=booking_room.room_id JOIN customer ON booking.customer_id=customer.customer_id WHERE customer.mail=$1;',[mail] ,(err, result) => {
-      if (err) {
-        console.error('Error executing query:', err);
-        res.status(500).json({ error: 'Internal Server Error' });
-      } else {
-        res.json(result.rows);
-        console.log(result);
-      }
-    });
-  });
-
-app.put('/canceling/:id', (req, res) => {
-    const { id } = req.params;
-    console.log("Trying to cancel");
-    console.log(id);
-
-    pool.query('UPDATE booking SET valid=\'canceled\' WHERE booking_id=$1 RETURNING *',[id],(err, result) => {
-      if (err) {
-        console.error('Error executing query:', err);
-        res.status(500).json({ error: 'Internal Server Error' });
-      } else if (result.rows.length === 0) {
-        res.status(404).json({ error: 'Item not found' });
-      } else {
-        res.json(result.rows[0]);
-      }
-    }
-  );
-});
-  
-// TO DO! add specific query where standard, number of beds, price are defined it can be served with if's
-// primary idea: SELECT room.room_id, room.queen_bed_num, room.single_bed_num, room.standard, booking_room.booking_id, booking.start_date, booking.end_date FROM room LEFT JOIN booking_room ON booking_room.room_id=room.room_id LEFT JOIN booking ON booking_room.booking_id=booking.booking_id where (start_date > \'$2\' OR end_date < \'$1\') OR  booking_room.room_id IS NULL ;
-app.get('/find', (req, res) => {
-  const startDate = req.query.startDate;
-  const endDate = req.query.endDate;
-  console.log("Trying to find rooms");
-  console.log(startDate);
-  console.log(endDate);
-
-  repl.query('SELECT room.room_id, room.queen_bed_num, room.single_bed_num, room.standard FROM room LEFT JOIN booking_room ON booking_room.room_id=room.room_id LEFT JOIN booking ON booking_room.booking_id=booking.booking_id where (start_date > $2 OR end_date < $1) OR  booking_room.room_id IS NULL  GROUP BY room.room_id ORDER BY room.room_id ;', [startDate, endDate],(err, result) => {
+  repl.query('SELECT booking.booking_id, booking.start_date, booking.end_date, booking.valid, room.queen_bed_num, room.single_bed_num, mail FROM booking JOIN booking_room ON booking.booking_id=booking_room.booking_id JOIN room ON room.room_id=booking_room.room_id JOIN customer ON booking.customer_id=customer.customer_id WHERE customer.mail=$1;', [mail], (err, result) => {
     if (err) {
       console.error('Error executing query:', err);
       res.status(500).json({ error: 'Internal Server Error' });
@@ -114,9 +76,43 @@ app.get('/find', (req, res) => {
   });
 });
 
-function IsNewCustomer(req, res, next) {
+app.put('/canceling/:id', (req, res) => {
+  const { id } = req.params;
+  console.log("Trying to cancel");
+  console.log(id);
 
-}
+  pool.query('UPDATE booking SET valid=\'canceled\' WHERE booking_id=$1 RETURNING *', [id], (err, result) => {
+    if (err) {
+      console.error('Error executing query:', err);
+      res.status(500).json({ error: 'Internal Server Error' });
+    } else if (result.rows.length === 0) {
+      res.status(404).json({ error: 'Item not found' });
+    } else {
+      res.json(result.rows[0]);
+    }
+  }
+  );
+});
+
+// TO DO! add specific query where standard, number of beds, price are defined it can be served with if's
+// primary idea: SELECT room.room_id, room.queen_bed_num, room.single_bed_num, room.standard, booking_room.booking_id, booking.start_date, booking.end_date FROM room LEFT JOIN booking_room ON booking_room.room_id=room.room_id LEFT JOIN booking ON booking_room.booking_id=booking.booking_id where (start_date > \'$2\' OR end_date < \'$1\') OR  booking_room.room_id IS NULL ;
+app.get('/find', (req, res) => {
+  const startDate = req.query.startDate;
+  const endDate = req.query.endDate;
+  console.log("Trying to find rooms");
+  console.log(startDate);
+  console.log(endDate);
+
+  repl.query('SELECT room.room_id, room.queen_bed_num, room.single_bed_num, room.standard FROM room LEFT JOIN booking_room ON booking_room.room_id=room.room_id LEFT JOIN booking ON booking_room.booking_id=booking.booking_id where (start_date > $2 OR end_date < $1) OR  booking_room.room_id IS NULL  GROUP BY room.room_id ORDER BY room.room_id ;', [startDate, endDate], (err, result) => {
+    if (err) {
+      console.error('Error executing query:', err);
+      res.status(500).json({ error: 'Internal Server Error' });
+    } else {
+      res.json(result.rows);
+      console.log(result);
+    }
+  });
+});
 
 // Add customer
 app.put('/customer', (req, res) => {
@@ -137,23 +133,23 @@ app.put('/customer', (req, res) => {
     } else if (check.rows.length === 0) {
       res.status(110); // new customer 
       console.log("New customer", check.rowCount);
-    } else { 
+    } else {
       res.status(111); // already in DB
     }
   });
 
-  if(res.statusCode === 110) {
-  pool.query('INSERT INTO customer (first_name, last_name, mail, phone) VALUES ($1, $2, $3, $4) RETURNING *', [firstName, lastName, email, phoneNumber], (err, result) => {
-    if (err) {
-      console.error('Error executing query:', err);
-      res.status(500).json({ error: 'Internal Server Error' });
-    } else if (result.rows.length === 0) {
-      res.status(404).json({ error: 'Item not found' });
-    } else {
-      res.json(result.rows[0]);
-    }
-  });
-} else console.log("Not added - already in DB");
+  if (res.statusCode === 110) {
+    pool.query('INSERT INTO customer (first_name, last_name, mail, phone) VALUES ($1, $2, $3, $4) RETURNING *', [firstName, lastName, email, phoneNumber], (err, result) => {
+      if (err) {
+        console.error('Error executing query:', err);
+        res.status(500).json({ error: 'Internal Server Error' });
+      } else if (result.rows.length === 0) {
+        res.status(404).json({ error: 'Item not found' });
+      } else {
+        res.json(result.rows[0]);
+      }
+    });
+  } else console.log("Not added - already in DB");
 
 }
 );
@@ -169,53 +165,71 @@ app.put('/bookRooms', (req, res) => {
   console.log(endDate);
   console.log(rooms);
 
-  console.log(res.statusCode);
-
+  // find customer id
   repl.query('SELECT customer_id FROM customer WHERE mail LIKE $1', [email], (err, result) => {
     if (err) {
       console.error('Error executing query:', err);
       res.status(500).json({ error: 'Internal Server Error' });
-    } else { 
-      res.json(result.rows);
-      console.log(result);
-    }
-  });
-
-  cutomerID : number = result;
-  price: string = '300$'; //temporary price
-  comment: string  = "-";
-  valid: string = "pending";
-
-
-  pool.query('INSERT INTO booking (start_date, end_datem, customer_id, comment, valid, price) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *', [startDate, endDate, email, cutomerID, comment, valid, price], (err, result) => {
-    if (err) {
-      console.error('Error executing query:', err);
-      res.status(500).json({ error: 'Internal Server Error' });
-    } else if (result.rows.length === 0) {
-      res.status(404).json({ error: 'Item not found' });
     } else {
-      res.json(result.rows[0]);
+      if (result.rows.length != 0) {
+        const customerID = result.rows[0].customer_id; // assuming customer_id is the column name
+        const price = '300$'; // temporary price
+        const comment = "-";
+        const valid = "pending";
+
+        // Insert booking into bookings table
+        pool.query('INSERT INTO booking (start_date, end_date, customer_id, comment, valid, price) VALUES ($1, $2, $3, $4, $5, $6)',
+          [startDate, endDate, customerID, comment, valid, price],
+          (insertErr, insertResult) => {
+            if (insertErr) {
+              console.error('Error executing insert query:', insertErr);
+              res.status(500).json({ error: 'Internal Server Error' });
+            } else {
+              res.status(200).json({ message: 'Booking successful' });
+            }
+          }
+        );
+      } else {
+        res.status(404).json({ error: 'Customer not found' });
+      }
     }
   });
-
-  bookingID : number = 0; // HOW TO GET bookingID?
-  
-  for (let i = 0; i < rooms.length; i++) {
-    console.log("Room ", rooms[i]);
-    pool.query('INSERT INTO booking_room (booking_id, room_id) VALUES ($1, $2) RETURNING *', [ bookingID,rooms[i]], (err, result) => {
-      if (err) {
-        console.error('Error executing query:', err);
-        res.status(500).json({ error: 'Internal Server Error' });
-      } else if (result.rows.length === 0) {
-        res.status(404).json({ error: 'Item not found' });
-      } else {
-        res.json(result.rows[0]);
-      }
-    });
-  }
+});
 
 
 
-}
-);
+  // console.log("Customer id:", cutomerID);
+
+  // pool.query('INSERT INTO booking (start_date, end_datem, customer_id, comment, valid, price) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *', [startDate, endDate, email, cutomerID, comment, valid, price], (err, result) => {
+  //   if (err) {
+  //     console.error('Error executing query:', err);
+  //     res.status(500).json({ error: 'Internal Server Error' });
+  //   } else if (result.rows.length === 0) {
+  //     res.status(404).json({ error: 'Item not found' });
+  //   } else {
+  //     res.json(result.rows[0]);
+  //   }
+  // });
+
+
+
+
+
+  // console.log("Added to booking");
+  // bookingID : number = 0; // HOW TO GET bookingID?
+
+  // for (let i = 0; i < rooms.length; i++) {
+  //   console.log("Room ", rooms[i]);
+  //   pool.query('INSERT INTO booking_room (booking_id, room_id) VALUES ($1, $2) RETURNING *', [ bookingID,rooms[i]], (err, result) => {
+  //     if (err) {
+  //       console.error('Error executing query:', err);
+  //       res.status(500).json({ error: 'Internal Server Error' });
+  //     } else if (result.rows.length === 0) {
+  //       res.status(404).json({ error: 'Item not found' });
+  //     } else {
+  //       res.json(result.rows[0]);
+  //     }
+  //   });
+  // }
+  // console.log("Added to booking_room");
 

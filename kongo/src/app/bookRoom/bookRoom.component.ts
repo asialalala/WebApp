@@ -35,17 +35,37 @@ export class BookRoomComponent implements OnInit {
     console.log("Rooms", this.bookingRooms.length);
     console.log("Since ", this.startDate, " until ", this.endDate);
     this.msg = "Booking...";
+    this.addCustomer();
+    this.bookRooms();
 
-    let cutomerNum = this.customers.length;
-    console.log("Ilosc takich customerow: ",  cutomerNum)
-    if (cutomerNum <= 0) {
-      this.addCustomer();
-    }
-
-    // add booking, create endpoint
     this.componentRef.destroy();
 
   }
+
+
+  bookRooms(): void {
+    console.log("Trying to add book!");
+    const url = `/api/bookRooms`;
+
+    // Use parameters in query body
+    const body = {
+      email: this.bookingForm.value.email,
+      phoneNumber: this.bookingForm.value.phoneNumber,
+      startDate: this.startDate,
+      endDate: this.endDate,
+      rooms: this.bookingRooms
+    };
+
+    this.http.put<any>(url, body).subscribe({
+      next: (response) => {
+        console.log('Rooms booked successful:', response);
+      },
+      error: (error) => {
+        console.error('Error:', error);
+      }
+    });
+  }
+
 
   addCustomer(): void {
     console.log("Trying to add customer!");
