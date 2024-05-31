@@ -19,6 +19,8 @@ import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
 import { CalendarModule } from 'primeng/calendar';
 import { BookRoomComponent } from './bookRoom/bookRoom.component';
 import { ReactiveFormsModule } from '@angular/forms';
+import { ListboxModule } from 'primeng/listbox';
+import { CheckboxModule } from 'primeng/checkbox';
 
 
 @NgModule({
@@ -43,7 +45,9 @@ import { ReactiveFormsModule } from '@angular/forms';
     InputGroupModule,
     InputGroupAddonModule,
     CalendarModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    ListboxModule,
+    CheckboxModule
   ],
   providers: [
     provideClientHydration(),

@@ -7,6 +7,32 @@
     <small id="startDate-help">
         Enter start and end date.
     </small>
+    <div class="container">
+        <div>
+            <h5 id="sort">
+                Sort by:
+            </h5>
+            <p-listbox [options]="sortOptions" [(ngModel)]="selectedSortOption" [style]="{'width':'15rem'}"
+                [listStyle]="{'max-height': '220px'}" />
+        </div>
+        <div>
+            <h5 id="Filter">
+                Filter:
+            </h5>
+
+            <div class="flex align-items-center">
+                <p-checkbox [(ngModel)]="selectedFilters" label="Standard I" name="standard" value="standardI" />
+            </div> 
+            <div class="flex align-items-center">
+                <p-checkbox [(ngModel)]="selectedFilters" label="Standard II" name="standard" value="standardII" />
+            </div> 
+            <div class="flex align-items-center">
+                <p-checkbox [(ngModel)]="selectedFilters" label="Standard III" name="standard" value="standardIII" />
+            </div> 
+
+        </div>
+
+    </div>
     <button pButton type="button" label="Find rooms" (click)="onFind()"></button>
     <div> {{this.msg}}</div>
 </div>

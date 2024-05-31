@@ -15,6 +15,10 @@ export class FindRoomsComponent {
   bookingRooms: number[] = [];
   @ViewChild("alertContainer", { read: ViewContainerRef }) container: any;
   componentRef: any;
+  sortOptions: string[] = ["Price ( lowest first)", "Price (highest first)"];
+  selectedSortOption: string = "";
+  filterOptions: string[] = ["starndard I, standard II, standard "];
+  selectedFilters: string[] = [];
 
   constructor(private http: HttpClient, private resolver: ComponentFactoryResolver) { }
 

@@ -11,3 +11,9 @@
     gap: 5px; 
     margin-right: 10px; 
 }
+
+.container {
+    display: flex; 
+    flex-direction: row;
+    gap: 20px; 
+}
