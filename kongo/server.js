@@ -1,4 +1,4 @@
-import { AuthTypes, Connector, IpAddressTypes } from '@google-cloud/cloud-sql-connector'
+// import { AuthTypes, Connector, IpAddressTypes } from '@google-cloud/cloud-sql-connector'
 
 // creates a simple Express server that listens on port 3000
 const express = require('express');
@@ -14,12 +14,12 @@ app.listen(port, () => {
 // Establishing a connection to PostgreSQL
 const { Pool } = require('pg')
 
-const connector = new Connector();
-const options = await connector.getOptions( {
-  instanceConnectionName: '',
-  ipType: IpAddressTypes.PUBLIC,
-  auhType: AuthTypes.PASSWORD
-});
+// const connector = new Connector();
+// const options = await connector.getOptions( {
+// instanceConnectionName: '',
+// ipType: IpAddressTypes.PUBLIC,
+// auhType: AuthTypes.PASSWORD
+// });
 
 /* 
 * Use this client when you want to add or upadte something in database
@@ -50,10 +50,10 @@ pool.connect(function (err) {
   console.log("bazydanych2024 CONNECTED!");
 });
 
-repl.connect(function (err) {
-  if (err) throw err;
-  console.log("bazydanych2024-replica CONNECTED!");
-});
+// repl.connect(function (err) {
+//   if (err) throw err;
+//   console.log("bazydanych2024-replica CONNECTED!");
+// });
 
 
 
@@ -99,19 +99,28 @@ app.put('/canceling/:id', (req, res) => {
 app.get('/find', (req, res) => {
   const startDate = req.query.startDate;
   const endDate = req.query.endDate;
+  const sort = req.sort; 
   console.log("Trying to find rooms");
   console.log(startDate);
   console.log(endDate);
+  console.log(sort);
 
-  repl.query('SELECT room.room_id, room.queen_bed_num, room.single_bed_num, room.standard FROM room LEFT JOIN booking_room ON booking_room.room_id=room.room_id LEFT JOIN booking ON booking_room.booking_id=booking.booking_id where (start_date > $2 OR end_date < $1) OR  booking_room.room_id IS NULL  GROUP BY room.room_id ORDER BY room.room_id ;', [startDate, endDate], (err, result) => {
-    if (err) {
-      console.error('Error executing query:', err);
-      res.status(500).json({ error: 'Internal Server Error' });
-    } else {
-      res.json(result.rows);
-      console.log(result);
-    }
-  });
+  if (sort == "Price (lowest first)") {
+    console.log("Lowest price");  
+  } else if (sort == "Price (highest first)") {
+    console.log("Highest price");
+  } else {
+    console.log("Normal");
+    pool.query('SELECT room.room_id, room.queen_bed_num, room.single_bed_num, room.standard FROM room LEFT JOIN booking_room ON booking_room.room_id=room.room_id LEFT JOIN booking ON booking_room.booking_id=booking.booking_id where (start_date > $2 OR end_date < $1) OR  booking_room.room_id IS NULL  GROUP BY room.room_id ORDER BY room.room_id ;', [startDate, endDate], (err, result) => {
+      if (err) {
+        console.error('Error executing query:', err);
+        res.status(500).json({ error: 'Internal Server Error' });
+      } else {
+        res.json(result.rows);
+        console.log(result);
+      }
+    });
+  }
 });
 
 // Add customer if doesnt exist in database

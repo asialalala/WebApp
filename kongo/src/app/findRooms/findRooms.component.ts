@@ -15,7 +15,7 @@ export class FindRoomsComponent {
   bookingRooms: number[] = [];
   @ViewChild("alertContainer", { read: ViewContainerRef }) container: any;
   componentRef: any;
-  sortOptions: string[] = ["Price ( lowest first)", "Price (highest first)"];
+  sortOptions: string[] = ["Price (lowest first)", "Price (highest first)"];
   selectedSortOption: string = "";
   filterOptions: string[] = ["starndard I, standard II, standard "];
   selectedFilters: string[] = [];
@@ -39,6 +39,10 @@ export class FindRoomsComponent {
   onFind(): void {
     this.msg = ""
     this.rooms = [];
+
+    console.log("selectedFilters: ", this.selectedFilters);
+    console.log("selectedSortOption: ", this.selectedSortOption);
+
     if (this.startDate < this.endDate) {
       const dayStart: number = this.startDate.getDate();
       const monthStart: number = this.startDate.getMonth() + 1;
@@ -66,15 +70,36 @@ export class FindRoomsComponent {
 
   getItems(start: string, end: string): void {
     console.log("Trying to connect!");
-    const params = new HttpParams().set('startDate', start).set('endDate', end);
+    const params = new HttpParams().set('startDate', start).set('endDate', end).set('sort', this.selectedSortOption);
     this.http.get<Room[]>('/api/find', { params }).subscribe({
       next: (response) => {
         this.rooms = response;
+        console.log("selectedFilters: ", this.selectedFilters);
+        console.log("rooms ", this.rooms);
+
+        if (!this.selectedFilters.includes("standardI")) {
+          console.log("Drop I");
+          this.rooms = this.rooms.filter(room => room.standard !== "I");
+        }
+        console.log("rooms ", this.rooms);
+
+        if (!this.selectedFilters.includes("standardII")) {
+          console.log("Drop II");
+          this.rooms = this.rooms.filter(room => room.standard !== "II");
+        }
+        console.log("rooms ", this.rooms);
+
+        if (!this.selectedFilters.includes("standardIII")) {
+          console.log("Drop III");
+          this.rooms = this.rooms.filter(room => room.standard !== "III");
+        }
+        console.log("rooms ", this.rooms);
       },
       error: (error) => {
         console.error('Error:', error);
       }
     });
+
   }
 
   onAddBook(roomId: number): void {
