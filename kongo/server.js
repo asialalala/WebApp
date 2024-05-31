@@ -28,7 +28,7 @@ const { Pool } = require('pg')
 const pool = new Pool({
   user: 'postgres',
   host: '34.172.182.207',
-  database: 'hotel',
+  database: 'Hotel',
   password: 'BazyDanych2024',
   port: 5432,
 })
@@ -40,7 +40,7 @@ const pool = new Pool({
 const repl = new Pool({
   user: 'postgres',
   host: '34.42.198.142',
-  database: 'hotel',
+  database: 'Hotel',
   password: 'BazyDanych2024',
   port: 5432,
 })
