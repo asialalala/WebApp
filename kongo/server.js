@@ -61,7 +61,7 @@ app.use(bodyParser.json());
 
 
 // SQL incjectios 
-const { escape } = require('sqlstring');
+const { escape } = require('sqlstring'); // How does it work? -> https://www.npmjs.com/package/sqlstring
 const allowedSortOptions = ["Price (lowest first)", "Price (highest first)"];
 
 // Defining API endpoints
@@ -69,6 +69,17 @@ app.get('/booking', (req, res) => {
   const mail = req.query.mail;
   console.log("Trying to get bookings");
   console.log(mail);
+
+  // Check if string and if it is not null
+  if (
+    typeof mail !== 'string' ||
+    !mail.trim()
+  ) {
+    return res.status(400).json({ error: 'Invalid input data' });
+  }
+  // Data escaping
+  mail = escape(mail);
+
 
   repl.query('SELECT booking.booking_id, booking.start_date, booking.end_date, booking.valid, room.queen_bed_num, room.single_bed_num, mail FROM booking JOIN booking_room ON booking.booking_id=booking_room.booking_id JOIN room ON room.room_id=booking_room.room_id JOIN customer ON booking.customer_id=customer.customer_id WHERE customer.mail=$1;', [mail], (err, result) => {
     if (err) {
@@ -86,6 +97,13 @@ app.put('/canceling/:id', (req, res) => {
   console.log("Trying to cancel");
   console.log(id);
 
+  // Check if number
+  if (
+    typeof mail !== 'number'
+  ) {
+    return res.status(400).json({ error: 'Invalid input data' });
+  }
+
   pool.query('UPDATE booking SET valid=\'canceled\' WHERE booking_id=$1 RETURNING *', [id], (err, result) => {
     if (err) {
       console.error('Error executing query:', err);
@@ -99,8 +117,7 @@ app.put('/canceling/:id', (req, res) => {
   );
 });
 
-// TO DO! add specific query where standard, number of beds, price are defined it can be served with if's
-// primary idea: SELECT room.room_id, room.queen_bed_num, room.single_bed_num, room.standard, booking_room.booking_id, booking.start_date, booking.end_date FROM room LEFT JOIN booking_room ON booking_room.room_id=room.room_id LEFT JOIN booking ON booking_room.booking_id=booking.booking_id where (start_date > \'$2\' OR end_date < \'$1\') OR  booking_room.room_id IS NULL ;
+// TO DO! add specific query where number of beds
 app.get('/find', (req, res) => {
   const startDate = req.query.startDate;
   const endDate = req.query.endDate;
@@ -110,10 +127,12 @@ app.get('/find', (req, res) => {
   console.log(endDate);
   console.log(sort);
 
+  // Check if sort is specifed correctly
   if (!allowedSortOptions.includes(sort)) {
     return res.status(400).json({ error: 'Invalid sort option' });
   }
 
+  // Chose type of query inluding sort type
   if (sort === "Price (lowest first)") {
     orderClause = 'ORDER BY room.price ASC';
   } else if (sort === "Price (highest first)") {
@@ -205,6 +224,7 @@ app.put('/bookRooms', (req, res) => {
   console.log(endDate);
   console.log(rooms);
 
+  // Check if correct data type
   if (
     typeof email !== 'string' ||
     typeof startDate !== 'string' ||
@@ -215,6 +235,7 @@ app.put('/bookRooms', (req, res) => {
     return res.status(400).json({ error: 'Invalid input data' });
   }
 
+  // Data escaping 
   startDate = escape(startDate);
   endDate = escape(endDate);
   email = escape(email);
