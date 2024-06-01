@@ -61,6 +61,7 @@ app.use(bodyParser.json());
 
 
 // SQL incjectios 
+const { escape } = require('sqlstring');
 const allowedSortOptions = ["Price (lowest first)", "Price (highest first)"];
 
 // Defining API endpoints
@@ -130,15 +131,15 @@ app.get('/find', (req, res) => {
     GROUP BY room.room_id 
     ${orderClause};`;
 
-    pool.query(query, [startDate, endDate], (err, result) => {
-      if (err) {
-        console.error('Error executing query:', err);
-        res.status(500).json({ error: 'Internal Server Error' });
-      } else {
-        res.json(result.rows);
-        console.log(result);
-      }
-    });
+  pool.query(query, [startDate, endDate], (err, result) => {
+    if (err) {
+      console.error('Error executing query:', err);
+      res.status(500).json({ error: 'Internal Server Error' });
+    } else {
+      res.json(result.rows);
+      console.log(result);
+    }
+  });
 
 });
 
@@ -150,9 +151,31 @@ app.put('/customer', (req, res) => {
   console.log(firstName);
   console.log(lastName);
   console.log(email);
-  console.log(phoneNumber);
+  console.log("Before checkoing and escaping: ", phoneNumber);
 
-  repl.query('SELECT mail FROM customer WHERE mail LIKE $1', [email], (err, check) => {
+  // Check if string and if not null
+  if (
+    typeof firstName !== 'string' ||
+    typeof lastName !== 'string' ||
+    typeof email !== 'string' ||
+    typeof phoneNumber !== 'string' ||
+    !firstName.trim() ||
+    !lastName.trim() ||
+    !email.trim() ||
+    !phoneNumber.trim()
+  ) {
+    return res.status(400).json({ error: 'Invalid input data' });
+  }
+  console.log("After checking, before escaping: ", phoneNumber);
+
+  // Data escaping 
+  firstName = escape(firstName);
+  lastName = escape(lastName);
+  email = escape(email);
+  phoneNumber = escape(phoneNumber);
+  console.log("After escaping: ", phoneNumber);
+
+  pool.query('SELECT mail FROM customer WHERE mail LIKE $1', [email], (err, check) => {
     if (err) {
       console.error('Error executing query:', err);
       res.status(500).json({ error: 'Internal Server Error' });
@@ -181,6 +204,21 @@ app.put('/bookRooms', (req, res) => {
   console.log(startDate);
   console.log(endDate);
   console.log(rooms);
+
+  if (
+    typeof email !== 'string' ||
+    typeof startDate !== 'string' ||
+    typeof endDate !== 'string' ||
+    !Array.isArray(rooms) ||
+    rooms.some(room => typeof room !== 'number')
+  ) {
+    return res.status(400).json({ error: 'Invalid input data' });
+  }
+
+  startDate = escape(startDate);
+  endDate = escape(endDate);
+  email = escape(email);
+
 
   // find customer id
   repl.query('SELECT customer_id FROM customer WHERE mail = $1', [email], (err, result) => { // Using '=' instead of 'LIKE'
