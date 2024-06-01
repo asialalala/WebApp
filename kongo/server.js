@@ -1,4 +1,4 @@
-import { AuthTypes, Connector, IpAddressTypes } from '@google-cloud/cloud-sql-connector'
+// import { AuthTypes, Connector, IpAddressTypes } from '@google-cloud/cloud-sql-connector'
 
 // creates a simple Express server that listens on port 3000
 const express = require('express');
@@ -14,12 +14,12 @@ app.listen(port, () => {
 // Establishing a connection to PostgreSQL
 const { Pool } = require('pg')
 
-const connector = new Connector();
-const options = await connector.getOptions( {
-instanceConnectionName: '',
-ipType: IpAddressTypes.PUBLIC,
-auhType: AuthTypes.PASSWORD
-});
+// const connector = new Connector();
+// const options = await connector.getOptions( {
+// instanceConnectionName: '',
+// ipType: IpAddressTypes.PUBLIC,
+// auhType: AuthTypes.PASSWORD
+// });
 
 /* 
 * Use this client when you want to add or upadte something in database
@@ -58,6 +58,10 @@ pool.connect(function (err) {
 
 
 app.use(bodyParser.json());
+
+
+// SQL incjectios 
+const allowedSortOptions = ["Price (lowest first)", "Price (highest first)"];
 
 // Defining API endpoints
 app.get('/booking', (req, res) => {
@@ -105,46 +109,37 @@ app.get('/find', (req, res) => {
   console.log(endDate);
   console.log(sort);
 
-  if (sort == "Price (lowest first)") {
-    console.log("Lowest price");
-
-    console.log("Normal");
-    pool.query('SELECT room.room_id, room.queen_bed_num, room.single_bed_num, room.standard, room.price FROM room LEFT JOIN booking_room ON booking_room.room_id=room.room_id LEFT JOIN booking ON booking_room.booking_id=booking.booking_id where (start_date > $2 OR end_date < $1) OR  booking_room.room_id IS NULL  GROUP BY room.room_id ORDER BY room.price ASC;', [startDate, endDate], (err, result) => {
-      if (err) {
-        console.error('Error executing query:', err);
-        res.status(500).json({ error: 'Internal Server Error' });
-      } else {
-        res.json(result.rows);
-        console.log(result);
-      }
-    });
-
-  } else if (sort == "Price (highest first)") {
-    console.log("Highest price");
-
-    console.log("Normal");
-    pool.query('SELECT room.room_id, room.queen_bed_num, room.single_bed_num, room.standard, room.price  FROM room LEFT JOIN booking_room ON booking_room.room_id=room.room_id LEFT JOIN booking ON booking_room.booking_id=booking.booking_id where (start_date > $2 OR end_date < $1) OR  booking_room.room_id IS NULL  GROUP BY room.room_id ORDER BY room.price DESC;', [startDate, endDate], (err, result) => {
-      if (err) {
-        console.error('Error executing query:', err);
-        res.status(500).json({ error: 'Internal Server Error' });
-      } else {
-        res.json(result.rows);
-        console.log(result);
-      }
-    });
-
-  } else {
-    console.log("Normal");
-    pool.query('SELECT room.room_id, room.queen_bed_num, room.single_bed_num, room.standard, room.price  FROM room LEFT JOIN booking_room ON booking_room.room_id=room.room_id LEFT JOIN booking ON booking_room.booking_id=booking.booking_id where (start_date > $2 OR end_date < $1) OR  booking_room.room_id IS NULL  GROUP BY room.room_id ORDER BY room.room_id ;', [startDate, endDate], (err, result) => {
-      if (err) {
-        console.error('Error executing query:', err);
-        res.status(500).json({ error: 'Internal Server Error' });
-      } else {
-        res.json(result.rows);
-        console.log(result);
-      }
-    });
+  if (!allowedSortOptions.includes(sort)) {
+    return res.status(400).json({ error: 'Invalid sort option' });
   }
+
+  if (sort === "Price (lowest first)") {
+    orderClause = 'ORDER BY room.price ASC';
+  } else if (sort === "Price (highest first)") {
+    orderClause = 'ORDER BY room.price DESC';
+  } else {
+    orderClause = 'ORDER BY room.room_id ASC';
+  }
+
+  const query = `
+    SELECT room.room_id, room.queen_bed_num, room.single_bed_num, room.standard, room.price 
+    FROM room 
+    LEFT JOIN booking_room ON booking_room.room_id = room.room_id 
+    LEFT JOIN booking ON booking_room.booking_id = booking.booking_id 
+    WHERE (start_date > $2 OR end_date < $1) OR booking_room.room_id IS NULL 
+    GROUP BY room.room_id 
+    ${orderClause};`;
+
+    pool.query(query, [startDate, endDate], (err, result) => {
+      if (err) {
+        console.error('Error executing query:', err);
+        res.status(500).json({ error: 'Internal Server Error' });
+      } else {
+        res.json(result.rows);
+        console.log(result);
+      }
+    });
+
 });
 
 // Add customer if doesnt exist in database
