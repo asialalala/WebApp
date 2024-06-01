@@ -77,22 +77,25 @@ export class FindRoomsComponent {
         console.log("selectedFilters: ", this.selectedFilters);
         console.log("rooms ", this.rooms);
 
-        if (!this.selectedFilters.includes("standardI")) {
-          console.log("Drop I");
-          this.rooms = this.rooms.filter(room => room.standard !== "I");
-        }
-        console.log("rooms ", this.rooms);
+        if (this.selectedFilters.length > 0) {
+          if (!this.selectedFilters.includes("standardI")) {
+            console.log("Drop I");
+            this.rooms = this.rooms.filter(room => room.standard !== "I");
+          }
+          console.log("rooms ", this.rooms);
 
-        if (!this.selectedFilters.includes("standardII")) {
-          console.log("Drop II");
-          this.rooms = this.rooms.filter(room => room.standard !== "II");
-        }
-        console.log("rooms ", this.rooms);
+          if (!this.selectedFilters.includes("standardII")) {
+            console.log("Drop II");
+            this.rooms = this.rooms.filter(room => room.standard !== "II");
+          }
+          console.log("rooms ", this.rooms);
 
-        if (!this.selectedFilters.includes("standardIII")) {
-          console.log("Drop III");
-          this.rooms = this.rooms.filter(room => room.standard !== "III");
+          if (!this.selectedFilters.includes("standardIII")) {
+            console.log("Drop III");
+            this.rooms = this.rooms.filter(room => room.standard !== "III");
+          }
         }
+
         console.log("rooms ", this.rooms);
       },
       error: (error) => {
@@ -119,4 +122,5 @@ interface Room {
   queen_bed_num: number;
   single_bed_num: number;
   standard: string;
+  price: number;
 }
