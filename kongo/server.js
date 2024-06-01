@@ -62,7 +62,7 @@ app.use(bodyParser.json());
 
 // SQL incjectios 
 const { escape } = require('sqlstring'); // How does it work? -> https://www.npmjs.com/package/sqlstring
-const allowedSortOptions = ["Price (lowest first)", "Price (highest first)"];
+const allowedSortOptions = ["Price (lowest first)", "Price (highest first)", ""];
 
 // Defining API endpoints
 app.get('/booking', (req, res) => {
@@ -81,7 +81,7 @@ app.get('/booking', (req, res) => {
   mail = escape(mail);
 
 
-  repl.query('SELECT booking.booking_id, booking.start_date, booking.end_date, booking.valid, room.queen_bed_num, room.single_bed_num, mail FROM booking JOIN booking_room ON booking.booking_id=booking_room.booking_id JOIN room ON room.room_id=booking_room.room_id JOIN customer ON booking.customer_id=customer.customer_id WHERE customer.mail=$1;', [mail], (err, result) => {
+  pool.query('SELECT booking.booking_id, booking.start_date, booking.end_date, booking.validation, room.queen_bed_num, room.single_bed_num, mail FROM booking JOIN booking_room ON booking.booking_id=booking_room.booking_id JOIN room ON room.room_id=booking_room.room_id JOIN customer ON booking.customer_id=customer.customer_id WHERE customer.mail=$1;', [mail], (err, result) => {
     if (err) {
       console.error('Error executing query:', err);
       res.status(500).json({ error: 'Internal Server Error' });
@@ -99,12 +99,12 @@ app.put('/canceling/:id', (req, res) => {
 
   // Check if number
   if (
-    typeof mail !== 'number'
+    typeof id !== 'number' || id == 0
   ) {
     return res.status(400).json({ error: 'Invalid input data' });
   }
 
-  pool.query('UPDATE booking SET valid=\'canceled\' WHERE booking_id=$1 RETURNING *', [id], (err, result) => {
+  pool.query('UPDATE booking SET validation=\'canceled\' WHERE booking_id=$1 RETURNING *', [id], (err, result) => {
     if (err) {
       console.error('Error executing query:', err);
       res.status(500).json({ error: 'Internal Server Error' });
@@ -164,7 +164,7 @@ app.get('/find', (req, res) => {
 
 // Add customer if doesnt exist in database
 app.put('/customer', (req, res) => {
-  const { firstName, lastName, email, phoneNumber } = req.body;
+  const {firstName, lastName, email, phoneNumber} = req.body;
 
   console.log("Trying to add customer");
   console.log(firstName);
@@ -188,18 +188,18 @@ app.put('/customer', (req, res) => {
   console.log("After checking, before escaping: ", phoneNumber);
 
   // Data escaping 
-  firstName = escape(firstName);
-  lastName = escape(lastName);
-  email = escape(email);
-  phoneNumber = escape(phoneNumber);
+  const firstNameE = escape(firstName);
+  const lastNameE = escape(lastName);
+  const emailE = escape(email);
+  // const phoneNumberE = escape(phoneNumber); It doesnt work but data base varifies that string
   console.log("After escaping: ", phoneNumber);
 
-  pool.query('SELECT mail FROM customer WHERE mail LIKE $1', [email], (err, check) => {
+  pool.query('SELECT mail FROM customer WHERE mail LIKE $1', [emailE], (err, check) => {
     if (err) {
       console.error('Error executing query:', err);
       res.status(500).json({ error: 'Internal Server Error' });
     } else if (check.rows.length === 0) {
-      pool.query('INSERT INTO customer (first_name, last_name, mail, phone) VALUES ($1, $2, $3, $4) RETURNING *', [firstName, lastName, email, phoneNumber], (insertErr, result) => {
+      pool.query('INSERT INTO customer (first_name, last_name, mail, phone) VALUES ($1, $2, $3, $4) RETURNING *', [firstNameE, lastNameE, emailE, phoneNumber], (insertErr, result) => {
         if (insertErr) {
           console.error('Error executing query:', insertErr);
           res.status(500).json({ error: 'Internal Server Error' });
@@ -216,7 +216,7 @@ app.put('/customer', (req, res) => {
 
 // Add booking, contains adding to booking and booking_room
 app.put('/bookRooms', (req, res) => {
-  const { email, startDate, endDate, rooms } = req.body;
+  const {email, startDate, endDate, rooms} = req.body;
 
   console.log("Trying to add booking");
   console.log(email);
@@ -236,13 +236,13 @@ app.put('/bookRooms', (req, res) => {
   }
 
   // Data escaping 
-  startDate = escape(startDate);
-  endDate = escape(endDate);
-  email = escape(email);
+  const startDateE = escape(startDate);
+  const endDateE = escape(endDate);
+  const emailE = escape(email);
 
 
   // find customer id
-  repl.query('SELECT customer_id FROM customer WHERE mail = $1', [email], (err, result) => { // Using '=' instead of 'LIKE'
+  pool.query('SELECT customer_id FROM customer WHERE mail = $1', [emailE], (err, result) => { // Using '=' instead of 'LIKE'
     if (err) {
       console.error('Error executing query:', err);
       return res.status(500).json({ error: 'Internal Server Error' });
@@ -250,13 +250,13 @@ app.put('/bookRooms', (req, res) => {
       console.log('Result length:', result.rows.length);
       if (result.rows.length != 0) {
         const customerID = result.rows[0].customer_id; // assuming customer_id is the column name
-        const price = '300$'; // temporary price
+        const price = 300; // temporary price
         const comment = "-";
         const valid = "pending";
 
         // Insert booking into bookings table
-        pool.query('INSERT INTO booking (start_date, end_date, customer_id, comment, valid, price) VALUES ($1, $2, $3, $4, $5, $6) RETURNING booking_id',
-          [startDate, endDate, customerID, comment, valid, price],
+        pool.query('INSERT INTO booking (start_date, end_date, customer_id, comment, validation, price) VALUES ($1, $2, $3, $4, $5, $6) RETURNING booking_id',
+          [startDateE, endDateE, customerID, comment, valid, price],
           (insertErr, insertResult) => {
             if (insertErr) {
               console.error('Error executing insert query:', insertErr);
