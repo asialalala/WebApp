@@ -78,10 +78,10 @@ app.get('/booking', (req, res) => {
     return res.status(400).json({ error: 'Invalid input data' });
   }
   // Data escaping
-  mail = escape(mail);
+  const mailE = escape(mail);
 
 
-  pool.query('SELECT booking.booking_id, booking.start_date, booking.end_date, booking.validation, room.queen_bed_num, room.single_bed_num, mail FROM booking JOIN booking_room ON booking.booking_id=booking_room.booking_id JOIN room ON room.room_id=booking_room.room_id JOIN customer ON booking.customer_id=customer.customer_id WHERE customer.mail=$1;', [mail], (err, result) => {
+  pool.query('SELECT booking.booking_id, booking.start_date, booking.end_date, booking.validation, room.queen_bed_num, room.single_bed_num, mail FROM booking JOIN booking_room ON booking.booking_id=booking_room.booking_id JOIN room ON room.room_id=booking_room.room_id JOIN customer ON booking.customer_id=customer.customer_id WHERE customer.mail=$1;', [mailE], (err, result) => {
     if (err) {
       console.error('Error executing query:', err);
       res.status(500).json({ error: 'Internal Server Error' });
