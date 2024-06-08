@@ -1,5 +1,5 @@
 // set env variable - path to credentials
-process.env.GOOGLE_APPLICATION_CREDENTIALS = 'zeta-instrument-CR.json';
+process.env.GOOGLE_APPLICATION_CREDENTIALS = 'sonic-shuttle-CR.json';
 
 // creates a simple Express server that listens on port 4000
 const express = require('express');
@@ -19,7 +19,7 @@ const { AuthTypes, Connector, IpAddressTypes } = require('@google-cloud/cloud-sq
 // TLS connection
 const connector = new Connector();
 const options = connector.getOptions( {
-  instanceConnectionName: 'zeta-instrument-421716:us-central1:bazydanychhotel2024',
+  instanceConnectionName: 'sonic-shuttle-425013-m4:us-central1:baza-danych-hotel',
   ipType: IpAddressTypes.PUBLIC,
   auhType: AuthTypes.PASSWORD
 });
