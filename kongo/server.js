@@ -170,7 +170,7 @@ app.put('/customer', (req, res) => {
   console.log(firstName);
   console.log(lastName);
   console.log(email);
-  console.log("Before checkoing and escaping: ", phoneNumber);
+  console.log("Before checkoing and escaping: ", firstName);
 
   // Check if string and if not null
   if (
@@ -185,14 +185,14 @@ app.put('/customer', (req, res) => {
   ) {
     return res.status(400).json({ error: 'Invalid input data' });
   }
-  console.log("After checking, before escaping: ", phoneNumber);
+  console.log("After checking, before escaping: ", firstName);
 
   // Data escaping 
   const firstNameE = escape(firstName);
   const lastNameE = escape(lastName);
   const emailE = escape(email);
   // const phoneNumberE = escape(phoneNumber); It doesnt work but data base varifies that string
-  console.log("After escaping: ", phoneNumber);
+  console.log("After escaping: ", firstNameE);
 
   pool.query('SELECT mail FROM customer WHERE mail LIKE $1', [emailE], (err, check) => {
     if (err) {
@@ -253,7 +253,7 @@ app.put('/bookRooms', (req, res) => {
         const price = 300; // temporary price
         const comment = "-";
         const valid = "pending";
-
+        // pool.query('SELECT * FROM hotele WHERE name like "' + hotel_name + "' ")   <--- w taki sposob dla sql injection
         // Insert booking into bookings table
         pool.query('INSERT INTO booking (start_date, end_date, customer_id, comment, validation, price) VALUES ($1, $2, $3, $4, $5, $6) RETURNING booking_id',
           [startDateE, endDateE, customerID, comment, valid, price],
