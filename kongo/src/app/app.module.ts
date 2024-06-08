@@ -21,6 +21,7 @@ import { BookRoomComponent } from './bookRoom/bookRoom.component';
 import { ReactiveFormsModule } from '@angular/forms';
 import { ListboxModule } from 'primeng/listbox';
 import { CheckboxModule } from 'primeng/checkbox';
+import { FloatLabelModule } from 'primeng/floatlabel';
 
 
 @NgModule({
@@ -47,7 +48,8 @@ import { CheckboxModule } from 'primeng/checkbox';
     CalendarModule,
     ReactiveFormsModule,
     ListboxModule,
-    CheckboxModule
+    CheckboxModule,
+    FloatLabelModule
   ],
   providers: [
     provideClientHydration(),

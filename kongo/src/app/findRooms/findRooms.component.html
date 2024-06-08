@@ -7,6 +7,12 @@
     <small id="startDate-help">
         Enter start and end date.
     </small>
+    <div>
+        <p-floatLabel>
+            <input pInputText id="guestsNumber" [(ngModel)]="guestsNumber" />
+            <label for="username">Guests</label>
+        </p-floatLabel>
+    </div>
     <div class="container">
         <div>
             <h5 id="sort">
@@ -22,13 +28,13 @@
 
             <div class="flex align-items-center">
                 <p-checkbox [(ngModel)]="selectedFilters" label="Standard I" name="standard" value="standardI" />
-            </div> 
+            </div>
             <div class="flex align-items-center">
                 <p-checkbox [(ngModel)]="selectedFilters" label="Standard II" name="standard" value="standardII" />
-            </div> 
+            </div>
             <div class="flex align-items-center">
                 <p-checkbox [(ngModel)]="selectedFilters" label="Standard III" name="standard" value="standardIII" />
-            </div> 
+            </div>
 
         </div>
 
