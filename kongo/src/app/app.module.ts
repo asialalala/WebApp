@@ -22,6 +22,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { ListboxModule } from 'primeng/listbox';
 import { CheckboxModule } from 'primeng/checkbox';
 import { FloatLabelModule } from 'primeng/floatlabel';
+import { InjectComponent } from './inject/inject.component';
 
 
 @NgModule({
@@ -32,7 +33,8 @@ import { FloatLabelModule } from 'primeng/floatlabel';
     MailComponent,
     DisplayBookingsComponent,
     FindRoomsComponent,
-    BookRoomComponent
+    BookRoomComponent,
+    InjectComponent
   ],
   imports: [
     BrowserModule,
