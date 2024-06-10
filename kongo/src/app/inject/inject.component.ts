@@ -11,7 +11,6 @@ export class InjectComponent {
   input: string = "";
   rows: Rows[] = [];
 
-
   constructor(private http: HttpClient, private fb: FormBuilder) {
   }
 
