@@ -164,7 +164,7 @@ app.get('/find', (req, res) => {
 
 // Add customer if doesnt exist in database
 app.put('/customer', (req, res) => {
-  const {firstName, lastName, email, phoneNumber} = req.body;
+  const { firstName, lastName, email, phoneNumber } = req.body;
 
   console.log("Trying to add customer");
   console.log(firstName);
@@ -216,7 +216,7 @@ app.put('/customer', (req, res) => {
 
 // Add booking, contains adding to booking and booking_room
 app.put('/bookRooms', (req, res) => {
-  const {email, startDate, endDate, rooms} = req.body;
+  const { email, startDate, endDate, rooms } = req.body;
 
   console.log("Trying to add booking");
   console.log(email);
@@ -296,6 +296,27 @@ app.put('/bookRooms', (req, res) => {
       } else {
         res.status(404).json({ error: 'Customer not found' });
       }
+    }
+  });
+});
+
+// Removing all rows from temporary table
+// In order to remove all rows: " input; DELETE FROM temporary"
+app.get('/injection', (req, res) => {
+  const input = req.query.input;
+  console.log("Trying to get info from temporary table");
+  console.log(input);
+
+  query = 'SELECT * FROM temp WHERE a=' + input + ';';
+  console.log("Query: ", query);
+
+  pool.query(query, (err, result) => {
+    if (err) {
+      console.error('Error executing query:', err);
+      res.status(500).json({ error: 'Internal Server Error' });
+    } else {
+      res.json(result.rows);
+      console.log(result);
     }
   });
 });

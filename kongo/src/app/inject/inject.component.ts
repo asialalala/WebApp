@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Component } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
 
@@ -9,31 +9,27 @@ import { FormBuilder } from '@angular/forms';
 })
 export class InjectComponent {
   input: string = "";
+  rows: Rows[] = [];
+
 
   constructor(private http: HttpClient, private fb: FormBuilder) {
   }
 
   onSubmit(): void {
     console.log(this.input);
-
-    const url = `/api/injection`;
-
-    // Use parameters in query body
-    const body = {
-      input: this.input
-    };
-
-    return;
-
-    // Call addCustomer and chain bookRooms to it
-    this.http.put<any>(url, body).subscribe({
+    const params = new HttpParams().set('input', this.input);
+    this.http.get<Rows[]>('/api/injection', { params }).subscribe({
       next: (response) => {
-        console.log('Input submitted successful:', response);
+        this.rows = response;
       },
       error: (error) => {
-        console.error('Error during submition:', error);
-        // Handle the error as needed
+        console.error('Error:', error);
       }
     });
   }
+};
+
+interface Rows {
+  a: number;
+  b: number;
 }

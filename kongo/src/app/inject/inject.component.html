@@ -6,3 +6,7 @@
     </p-floatLabel>
 </div>
 <button pButton type="button" label="Submit SQL injection" (click)="onSubmit()"></button>
+<ng-container *ngFor="let row of rows">
+    <p>A: {{ row.a }}</p>
+    <p>B: {{ row.b }}</p>
+</ng-container>
