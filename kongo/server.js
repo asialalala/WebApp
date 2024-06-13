@@ -307,14 +307,19 @@ app.put('/bookRooms', (req, res) => {
             } else {
               const bookingId = insertResult.rows[0].booking_id;
               console.log("booking_id: ", bookingId);
-              //const bookingRoomPromises = [];
+              
+              tmp = "";
+              insertQ = "INSERT INTO booking_room VALUES ";
 
-              for (let i = 0; i < rooms.length; i++) {
-                console.log("Room ", rooms[i]);
-                //bookingRoomPromises.push(new Promise((resolve, reject) => {
-                  pool.query('INSERT INTO booking_room (booking_id, room_id) VALUES ($1, $2) RETURNING *', [bookingId, rooms[i]], (err, result) => {
+              for (i = 0; i < rooms.length; i++) {
+                tmp = `(${bookingId}, ${rooms[i]})`;
+                insertQ += tmp;
+                if (i != rooms.length - 1) insertQ += ", ";
+              }
+              insertQ += " RETURNING *";
+              console.log("Query: ", insertQ);
+                  pool.query(insertQ, (err, result) => {
                     if (err) {
-                      console.error('Error executing query INSERT INTO booking_room, i = %d, room = %d:', i, rooms[i], err);
                       pool.query('ROLLBACK', (comErr) => {
                         if(comErr) {
                           console.error('Error executing query ROLLBACK:', comErr);
@@ -347,7 +352,7 @@ app.put('/bookRooms', (req, res) => {
                 });
               }
             });
-         }
+        
                   
             }
           });
