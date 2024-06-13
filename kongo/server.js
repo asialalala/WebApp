@@ -1,5 +1,5 @@
 // import { AuthTypes, Connector, IpAddressTypes } from '@google-cloud/cloud-sql-connector'
-process.env.GOOGLE_APPLICATION_CREDENTIALS = 'sonic-shuttle-CR.json';
+process.env.GOOGLE_APPLICATION_CREDENTIALS = '../../sonic-shuttle-CR.json';
 
 // creates a simple Express server that listens on port 3000
 const express = require('express');
@@ -227,13 +227,14 @@ app.put('/customer', (req, res) => {
                   console.error('Error executing query:', insertErr);
                   res.status(500).json({ error: 'Internal Server Error' });
                 } else {
+                  console.log('Commited.');
                   res.status(201).json(result.rows[0]); // 201 Created 
                 }
               });
             }
           });
         } else {
-          pool.query('COMMIT', (commitErr, commitCheck) => {
+          pool.query('COMMIT', (commitErr) => {
             if (commitErr) {
               console.error('Error executing query:', insertErr);
               res.status(500).json({ error: 'Internal Server Error' });
@@ -306,52 +307,50 @@ app.put('/bookRooms', (req, res) => {
             } else {
               const bookingId = insertResult.rows[0].booking_id;
               console.log("booking_id: ", bookingId);
-              const bookingRoomPromises = [];
+              //const bookingRoomPromises = [];
 
               for (let i = 0; i < rooms.length; i++) {
                 console.log("Room ", rooms[i]);
-                bookingRoomPromises.push(new Promise((resolve, reject) => {
+                //bookingRoomPromises.push(new Promise((resolve, reject) => {
                   pool.query('INSERT INTO booking_room (booking_id, room_id) VALUES ($1, $2) RETURNING *', [bookingId, rooms[i]], (err, result) => {
                     if (err) {
-                      console.error('Error executing query INSERT INTO booking_room:', err);
-                      reject('Internal Server Error');
+                      console.error('Error executing query INSERT INTO booking_room, i = %d, room = %d:', i, rooms[i], err);
+                      pool.query('ROLLBACK', (comErr) => {
+                        if(comErr) {
+                          console.error('Error executing query ROLLBACK:', comErr);
+                          return res.status(500).json({ error: 'Internal Server Error' }); 
+                        } else {
+                          console.error('Error during booking room insertion:', comErr);
+                          res.status(500).json({ error: comErr });
+                        }
+                      });
                     } else if (result.rows.length === 0) {
-                      reject('Item not found');
-                    } else {
-                      resolve(result.rows[0]);
-                    }
-                  });
-                }));
-              }
-
-              Promise.all(bookingRoomPromises)
-                .then(results => {
-                  pool.query('COMMIT', (comErr) => {
-                    if(comErr) {
-                      console.error('Error executing query COMMIT:', comErr);
-                      return res.status(500).json({ error: 'Internal Server Error' }); 
-                    } else {
-                      console.log("Added to booking_room");
-                      res.status(200).json({ message: 'Booking successful', booking_id: bookingId });
-                    }
-                  });
-                  
-                })
-                .catch(error => {
-                  pool.query('ROLLBACK', (comErr) => {
-                    if(comErr) {
-                      console.error('Error executing query ROLLBACK:', comErr);
-                      return res.status(500).json({ error: 'Internal Server Error' }); 
-                    } else {
-                      console.error('Error during booking room insertion:', error);
-                      res.status(500).json({ error: error });
-                    }
-                  });
-                  
+                      pool.query('ROLLBACK', (comErr) => {
+                        if(comErr) {
+                          console.error('Error executing query ROLLBACK:', comErr);
+                          return res.status(500).json({ error: 'Internal Server Error' }); 
+                        } else {
+                          console.error('Error during booking room insertion:', comErr);
+                          res.status(500).json({ error: comErr });
+                        }
+                      });
+              } else {
+                console.log(result);
+                pool.query('COMMIT', (comErr) => {
+                  if(comErr) {
+                    console.error('Error executing query COMMIT:', comErr);
+                    return res.status(500).json({ error: 'Internal Server Error' }); 
+                  } else {
+                    console.log("Added to booking_room");
+                    res.status(200).json({ message: 'Booking successful', booking_id: bookingId });
+                  }
                 });
+              }
+            });
+         }
+                  
             }
-          }
-        );
+          });
       } else {
         res.status(404).json({ error: 'Customer not found' });
       }
