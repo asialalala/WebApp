@@ -19,6 +19,7 @@ export class FindRoomsComponent {
   selectedSortOption: string = "";
   filterOptions: string[] = ["starndard I, standard II, standard "];
   selectedFilters: string[] = [];
+  guestsNumber: number = 0;
 
   constructor(private http: HttpClient, private resolver: ComponentFactoryResolver) { }
 
@@ -70,7 +71,7 @@ export class FindRoomsComponent {
 
   getItems(start: string, end: string): void {
     console.log("Trying to connect!");
-    const params = new HttpParams().set('startDate', start).set('endDate', end).set('sort', this.selectedSortOption);
+    const params = new HttpParams().set('startDate', start).set('endDate', end).set('sort', this.selectedSortOption).set('gestNum', this.guestsNumber);
     this.http.get<Room[]>('/api/find', { params }).subscribe({
       next: (response) => {
         this.rooms = response;

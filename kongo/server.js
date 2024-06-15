@@ -365,7 +365,25 @@ app.put('/bookRooms', (req, res) => {
     } //begin else
 
 });
+});
 
+// Removing all rows from temporary table
+// In order to remove all rows: " input; DELETE FROM temp"
+app.get('/injection', (req, res) => {
+  const input = req.query.input;
+  console.log("Trying to get info from temporary table");
+  console.log(input);
 
+  query = 'SELECT * FROM temp WHERE a=' + input + ';';
+  console.log("Query: ", query);
 
+  pool.query(query, (err, result) => {
+    if (err) {
+      console.error('Error executing query:', err);
+      res.status(500).json({ error: 'Internal Server Error' });
+    } else {
+      res.json(result.rows);
+      console.log(result);
+    }
+  });
 });
