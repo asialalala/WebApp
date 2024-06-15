@@ -1,21 +1,19 @@
 <h1>Hotel Classic</h1>
 <div>
     <div class="container">
-        <button (click)="showComponent('bookings')">Display My Bookings</button>
-        <button (click)="showComponent('rooms')">Find Rooms</button>
-        <button (click)="showComponent('inject')">SQL Injection Test</button>
+        <button pButton (click)="showComponent('bookings')">Display My Bookings</button>
+        <button pButton (click)="showComponent('rooms')">Find Rooms</button>
+        <button pButton (click)="showComponent('inject')">SQL Injection Test</button>
     </div>
 
-    <div calss = "center">
-        <ng-container *ngIf="currentComponent === 'bookings'">
-            <appDisplayBookings></appDisplayBookings>
-        </ng-container>
-        <ng-container *ngIf="currentComponent === 'rooms'">
-            <appFindRooms></appFindRooms>
-        </ng-container>
-        <ng-container *ngIf="currentComponent === 'inject'">
-            <app-inject></app-inject>
-        </ng-container>
-    </div>
+    <ng-container *ngIf="currentComponent === 'bookings'">
+        <appDisplayBookings></appDisplayBookings>
+    </ng-container>
+    <ng-container *ngIf="currentComponent === 'rooms'">
+        <appFindRooms></appFindRooms>
+    </ng-container>
+    <ng-container *ngIf="currentComponent === 'inject'">
+        <app-inject></app-inject>
+    </ng-container>
 
 </div>
