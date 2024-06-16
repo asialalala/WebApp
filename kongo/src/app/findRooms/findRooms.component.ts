@@ -20,6 +20,7 @@ export class FindRoomsComponent {
   filterOptions: string[] = ["starndard I, standard II, standard "];
   selectedFilters: string[] = [];
   guestsNumber: number = 0;
+  price : number = 0;
 
   constructor(private http: HttpClient, private resolver: ComponentFactoryResolver) { }
 
@@ -31,7 +32,9 @@ export class FindRoomsComponent {
       this.componentRef.instance.bookingRooms = this.bookingRooms;
       this.componentRef.instance.startDate = this.startDate;
       this.componentRef.instance.endDate = this.endDate;
+      this.componentRef.instance.price = this.price;
       this.componentRef.instance.componentRef = this.componentRef;
+      
     } else {
       console.error('Container is not defined');
     }
@@ -109,11 +112,18 @@ export class FindRoomsComponent {
   onAddBook(roomId: number): void {
     console.log("Add to the booking room nr ", roomId);
     this.bookingRooms.push(roomId);
+    const room = this.rooms.find(r => r.room_id === roomId);
+    if (room) {
+      this.price += room.price;
+    } else {
+      console.error('Room not found');
+    }
   }
 
   onBook(): void {
     console.log("Book");
     this.createComponent();
+    this.price = 0;
   }
 
 }

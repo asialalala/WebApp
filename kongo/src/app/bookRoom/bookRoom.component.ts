@@ -17,6 +17,7 @@ export class BookRoomComponent implements OnInit {
   @Input() componentRef: any;
   customers: number[] = [];
   msg = "";
+  price = 0;
 
   private destroyRef = inject(DestroyRef);
 
@@ -66,7 +67,8 @@ export class BookRoomComponent implements OnInit {
       phoneNumber: this.bookingForm.value.phoneNumber,
       startDate: this.startDate,
       endDate: this.endDate,
-      rooms: this.bookingRooms
+      rooms: this.bookingRooms,
+      price: this.price
     };
 
     this.http.put<any>(url, body).subscribe({

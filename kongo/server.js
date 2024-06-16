@@ -254,7 +254,7 @@ app.put('/customer', (req, res) => {
 
 // Add booking, contains adding to booking and booking_room
 app.put('/bookRooms', (req, res) => {
-  const { email, startDate, endDate, rooms } = req.body;
+  const { email, startDate, endDate, rooms, price } = req.body;
 
   console.log("Trying to add booking");
   console.log(email);
@@ -293,7 +293,6 @@ app.put('/bookRooms', (req, res) => {
       console.log('Result length:', result.rows.length);
       if (result.rows.length != 0) {
         const customerID = result.rows[0].customer_id; // assuming customer_id is the column name
-        const price = 300; // temporary price
         const comment = "-";
         const valid = "pending";
         // pool.query('SELECT * FROM hotele WHERE name like "' + hotel_name + "' ")   <--- w taki sposob dla sql injection
