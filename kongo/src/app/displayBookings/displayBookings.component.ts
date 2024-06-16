@@ -34,6 +34,7 @@ export class DisplayBookingsComponent {
     this.http.get<Booking[]>('/api/booking', { params }).subscribe({
       next: (response) => {
         this.bookings = response;
+        console.log(this.bookings);
       },
       error: (error) => {
         console.error('Error:', error);
