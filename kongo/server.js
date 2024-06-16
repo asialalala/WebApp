@@ -32,6 +32,7 @@ const optionsRepl = connectorRepl.getOptions({
   auhType: AuthTypes.PASSWORD
 });
 
+
 /* 
 * Use this client when you want to add or upadte something in database
 * Conection to bazydanych2024
@@ -94,7 +95,7 @@ app.get('/booking', (req, res) => {
   const mailE = escape(mail);
 
 
-  pool.query('SELECT booking.booking_id, booking.start_date, booking.end_date, booking.validation, room.queen_bed_num, room.single_bed_num, mail FROM booking JOIN booking_room ON booking.booking_id=booking_room.booking_id JOIN room ON room.room_id=booking_room.room_id JOIN customer ON booking.customer_id=customer.customer_id WHERE customer.mail=$1;', [mailE], (err, result) => {
+  repl.query('SELECT booking.booking_id, booking.start_date, booking.end_date, booking.validation, room.queen_bed_num, room.single_bed_num, mail FROM booking JOIN booking_room ON booking.booking_id=booking_room.booking_id JOIN room ON room.room_id=booking_room.room_id JOIN customer ON booking.customer_id=customer.customer_id WHERE customer.mail=$1;', [mailE], (err, result) => {
     if (err) {
       console.error('Error executing query:', err);
       res.status(500).json({ error: 'Internal Server Error' });
@@ -110,13 +111,6 @@ app.put('/canceling/:id', (req, res) => {
   console.log("Trying to cancel");
   console.log(id);
 
-  // Check if number
-  if (
-    typeof id !== 'number' || id == 0
-  ) {
-    return res.status(400).json({ error: 'Invalid input data' });
-  }
-
   pool.query('UPDATE booking SET validation=\'canceled\' WHERE booking_id=$1 RETURNING *', [id], (err, result) => {
     if (err) {
       console.error('Error executing query:', err);
@@ -124,6 +118,7 @@ app.put('/canceling/:id', (req, res) => {
     } else if (result.rows.length === 0) {
       res.status(404).json({ error: 'Item not found' });
     } else {
+      console.log("sucessed")
       res.json(result.rows[0]);
     }
   }
@@ -163,7 +158,7 @@ app.get('/find', (req, res) => {
     GROUP BY room.room_id 
     ${orderClause};`;
 
-  pool.query(query, [startDate, endDate], (err, result) => {
+    repl.query(query, [startDate, endDate], (err, result) => {
     if (err) {
       console.error('Error executing query:', err);
       res.status(500).json({ error: 'Internal Server Error' });
@@ -204,7 +199,6 @@ app.put('/customer', (req, res) => {
   const firstNameE = escape(firstName);
   const lastNameE = escape(lastName);
   const emailE = escape(email);
-  // const phoneNumberE = escape(phoneNumber); It doesnt work but data base varifies that string
   console.log("After escaping: ", firstNameE);
 
   pool.query('BEGIN', (beginErr) => {
@@ -367,7 +361,8 @@ app.put('/bookRooms', (req, res) => {
 });
 
 // Removing all rows from temporary table
-// In order to remove all rows: " input; DELETE FROM temp"
+// In order to remove all rows: " 1; DELETE FROM temp; "
+// 1 DELETE FROM temp
 app.get('/injection', (req, res) => {
   const input = req.query.input;
   console.log("Trying to get info from temporary table");

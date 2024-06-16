@@ -12,27 +12,52 @@
 
 <div *ngIf="bookings.length > 0">
   <ul>
-    <ng-container *ngFor="let booking of bookings">
-      <div >
+    <div *ngIf="oneBooking == false">
+      <ng-container *ngFor="let booking of bookings">
+        <div *ngIf="booking.booking_id!=lastBooking">
+          <p-card>
+            <ng-template pTemplate="title">
+              <span>Booking Details</span>
+            </ng-template>
+            <ng-template pTemplate="content">
+              <p>Start Date: {{ booking.start_date }}</p>
+              <p>End Date: {{ booking.end_date }}</p>
+              <p>Status: {{booking.validation}}</p>
+              <button pButton type="button" label="Cancel" (click)="onCancel(booking.booking_id)"></button>
+            </ng-template>
+          </p-card>
+        </div>
+        <ul>
+          <p>Queen Beds: {{ booking.queen_bed_num }}</p>
+          <p>Single Beds: {{ booking.single_bed_num }}</p>
+          <div class="empty-space"></div>
+        </ul>
+        <p>{{ updateLastBooking(booking.booking_id) }}</p>
+      </ng-container>
+    </div>
+    <div *ngIf="oneBooking == true">
+      <div *ngIf="bookings[0].booking_id!=lastBooking">
         <p-card>
           <ng-template pTemplate="title">
             <span>Booking Details</span>
           </ng-template>
           <ng-template pTemplate="content">
-            <p>Start Date: {{ booking.start_date }}</p>
-            <p>End Date: {{ booking.end_date }}</p>
-            <p>Valid: {{ booking.valid }}</p>
-            <button pButton type="button" label="Cancel" (click)="onCancel(booking.booking_id)"></button>
+            <p>Start Date: {{ bookings[0].start_date }}</p>
+            <p>End Date: {{ bookings[0].end_date }}</p>
+            <p>Status: {{bookings[0].validation}}</p>
+            <button pButton type="button" label="Cancel" (click)="onCancel(bookings[0].booking_id)"></button>
           </ng-template>
         </p-card>
       </div>
-      <ul>
-        <p>Queen Beds: {{ booking.queen_bed_num }}</p>
-        <p>Single Beds: {{ booking.single_bed_num }}</p>
-        <div class="empty-space"></div>
-        <p *ngIf="updateLastBooking(booking.booking_id)"></p>
-      </ul>
-    </ng-container>
+      <ng-container *ngFor="let booking of bookings">
+        <ul>
+          <p>Queen Beds: {{ booking.queen_bed_num }}</p>
+          <p>Single Beds: {{ booking.single_bed_num }}</p>
+          <div class="empty-space"></div>
+        </ul>
+      </ng-container>
+    </div>
+
   </ul>
 </div>
 <p *ngIf="bookings.length === 0">No bookings found</p>

@@ -11,6 +11,7 @@ export class DisplayBookingsComponent {
   bookings: Booking[] = [];
   email: string = '';
   lastBooking: number = 0;
+  oneBooking = true;
 
   constructor(private http: HttpClient) { }
   
@@ -20,6 +21,7 @@ export class DisplayBookingsComponent {
   }
 
   updateLastBooking(booingId: number): void {
+    console.log("Update ", this.lastBooking, " on ", booingId )
     this.lastBooking = booingId;
   }
 
@@ -35,6 +37,18 @@ export class DisplayBookingsComponent {
       next: (response) => {
         this.bookings = response;
         console.log(this.bookings);
+        this.lastBooking = this.bookings[0].booking_id;
+        this.oneBooking = true;
+        for (let i = 0; i < this.bookings.length; i++) {
+          if (this.bookings[i].booking_id !== this.lastBooking) {
+            this.oneBooking = false;
+            this.lastBooking = this.bookings[i].booking_id;
+            break; 
+          }
+        }
+        this.lastBooking = 0;
+
+        console.log(this.bookings[0].validation);
       },
       error: (error) => {
         console.error('Error:', error);
@@ -63,7 +77,7 @@ interface Booking {
   booking_id: number,
   start_date: string;
   end_date: string;
-  valid: boolean;
+  validation: boolean;
   queen_bed_num: number;
   single_bed_num: number;
   mail: string;
